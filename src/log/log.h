@@ -27,13 +27,14 @@
 #include <memory>
 #include <chrono>
 #include <vector>
+#include <map>
 
 namespace experience {
 
 // LogLevel use to convert level
 class LogLevel {
 public:
-    enum class Level {Debug, Info, Warn, Err, Fatal};
+    enum class Level { Fatal, Err, Warn, Info, Debug };
     /**
      * @brief transform class level to string
      * @param[in] level class type log level
@@ -167,6 +168,21 @@ public:
      */
     void init();
 
+    /**
+     * @brief log 
+     * @param[in] level log level
+     * @param[in] event log event
+     */
+    const std::string format(LogLevel::Level level, LogEvent::ptr event);
+
+    /**
+     * @brief 
+     * @param os ostream
+     * @param level log level
+     * @param event log event
+     */
+    std::ostream & format(std::ostream & os, LogLevel::Level level, LogEvent::ptr event);    
+
 public:
     // FormaterItem format item
     class FormaterItem {
@@ -213,26 +229,99 @@ private:
 class LogAppender {
 public:
     typedef std::shared_ptr<LogAppender> ptr;
-    // format log to appender
+
+    /**
+     * @brief must init
+     */
+    virtual void init() = 0;
+
+    /**
+     * @brief 
+     * @param[in] level log level
+     * @param[in] event
+     */
     virtual void format(LogLevel::Level level, LogEvent::ptr event) = 0;
-private:
+    
+    /**
+     * @brief Set the level object
+     * @param[in] level set log level 
+     */
+    virtual void set_level(LogLevel::Level level) = 0;
+
+protected:
     /// log formater 
-    LogFormater::ptr formater;
+    LogFormater::ptr formater_;
+    /// log level
+    LogLevel::Level level_ { LogLevel::Level::Info };
 };
 
 
 class Logger {
 public:
+    /**
+     * @brief Construct a new Logger object
+     */
     Logger();
 
-    
+    /**
+     * @brief use default log appender
+     */
+    void use_default();
+
+    /**
+     * @brief add appender to log map
+     * @param name appender name
+     * @param appender appender obj
+     */
+    void add_appender(const std::string & name, LogAppender::ptr appender);
+
+    /**
+     * @brief delete appender
+     * @param[in] appender delete appender name
+     */
+    void delete_appender(const std::string & name);
+
+    /**
+     * @brief log
+     * @param[in] level log level
+     * @param[in] event log event
+     */
+    void log(LogLevel::Level level, LogEvent::ptr event);
+
+    /**
+     * @brief debug log
+     * @param[in] event log event
+     */
+    void debug(LogEvent::ptr event);
+
+    /**
+     * @brief info log
+     * @param[in] event log event
+     */
+    void info(LogEvent::ptr event);
+
+    /**
+     * @brief warn log
+     * @param[in] event log event
+     */
+    void warn(LogEvent::ptr event);
+
+    /**
+     * @brief error log
+     * @param[in] event log event
+     */
+    void error(LogEvent::ptr event);
+
+    /**
+     * @brief fatal log
+     * @param[in] event log event
+     */
+    void fatal(LogEvent::ptr event);
 
 private:
     /// log appenders
-    std::vector<LogAppender::ptr> appenders_;
+    std::map<std::string, LogAppender::ptr> appenders_;
 };
-
-
 
 
 }
