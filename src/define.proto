@@ -1,0 +1,73 @@
+// protobuf version
+syntax = "proto3";
+
+// export go package
+option go_package = "./;define";
+
+package define;
+
+// Basic object struct for mul message
+message Obj {
+    string model = 1;
+    string id = 2;
+}
+
+message HardwareOther {
+    string machine = 1;
+    string apt = 2;
+    string active = 3;
+}
+
+// save hardware info last time
+message HardwareInfo {
+    int32    tid = 1;
+    string os_type = 4;
+    string version = 6;
+    string uni_id = 7;
+    repeated Obj cpu = 8;
+    repeated Obj board = 9;
+    repeated Obj gpu = 10;
+    repeated Obj memory = 11;
+    repeated Obj disk = 12;
+    repeated Obj network = 13;
+    HardwareOther other = 14;
+}
+
+// save post abstract
+message PostDomain {
+    string url_path = 1;
+    uint64 time = 2;
+}
+
+// save post interfaces info last time
+message PostInterface {
+    // all domains {"https://abc.com",12345}
+    repeated PostDomain domains = 1;
+    string aid = 2;
+    string base = 3;
+    string info = 4;
+    string order = 5;
+    string apt = 6;
+    string use = 7;
+    string update = 8;
+    string update_domain = 9;
+    string update_path = 10;
+    string general = 11;
+    string post_type = 12;
+    string uni_id = 13;
+}
+
+// save user ref config, apt time, user-exp-enabled, develop-mode
+message SysCfg {
+    bool develop = 1;
+    bool user_exp = 2;
+    uint64 apt = 3;
+}
+
+
+
+// RSAKey store rsa public key and private key
+message RsaKey {
+    string public = 1;
+    string private = 2;
+}

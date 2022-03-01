@@ -20,6 +20,9 @@
 #ifndef __EXPERIENCE_SRC_LOG_H__
 #define __EXPERIENCE_SRC_LOG_H__
 
+#include "singleton.h"
+#include "utils.h"
+
 #include <cstdint>
 #include <ostream>
 #include <sstream>
@@ -29,6 +32,30 @@
 #include <vector>
 #include <map>
 #include <mutex>
+
+// cpp style log
+
+// simple style log
+#define EXPERIENCE_DEBUG(msg) EXPERIENCE_LOG(experience::LogLevel::Debug, msg)
+#define EXPERIENCE_INFO(msg) EXPERIENCE_LOG(experience::LogLevel::Info, msg)
+#define EXPERIENCE_WARN(msg) EXPERIENCE_LOG(experience::LogLevel::Warn, msg)
+#define EXPERIENCE_ERR(msg) EXPERIENCE_LOG(experience::LogLevel::Err, msg)
+#define EXPERIENCE_FATAL(msg) EXPERIENCE_LOG(experience::LogLevel::Fatal, msg)
+#define EXPERIENCE_LOG(level, msg) \
+    experience::SingletonPtr<experience::Logger>::get_instance()->log(level, std::make_shared<experience::LogEvent>(std::chrono::system_clock::now(), \
+        experience::SystemInfo::user(), experience::SystemInfo::process_name(), experience::SystemInfo::pid(), __FILE__, __FUNC__, __LINE__, msg))
+
+// fmt style log
+#define EXPERIENCE_FMT_DEBUG(fmt, ...) EXPERIENCE_FMT_LOG(experience::LogLevel::Debug, fmt, __VA_ARGS__)
+#define EXPERIENCE_FMT_INFO(fmt, ...) EXPERIENCE_FMT_LOG(experience::LogLevel::Info, fmt, __VA_ARGS__)
+#define EXPERIENCE_FMT_WARN(fmt, ...) EXPERIENCE_FMT_LOG(experience::LogLevel::Warn, fmt, __VA_ARGS__)
+#define EXPERIENCE_FMT_ERR(fmt, ...) EXPERIENCE_FMT_LOG(experience::LogLevel::Err, fmt, __VA_ARGS__)
+#define EXPERIENCE_FMT_FATAL(fmt, ...) EXPERIENCE_FMT_LOG(experience::LogLevel::Fatal, fmt, __VA_ARGS__)
+#define EXPERIENCE_FMT_LOG(level, fmt, ...) \
+    experience::SingletonPtr<experience::Logger>::get_instance()->log(level, std::make_shared<experience::LogEvent>(std::chrono::system_clock::now(), \
+        experience::SystemInfo::user(), experience::SystemInfo::process_name(), experience::SystemInfo::pid(), __FILE__, __FUNC__, __LINE__, \
+            experience::StringUtils::sprintf(fmt, __VA_ARGS__)))
+
 
 namespace experience {
 
@@ -178,9 +205,9 @@ public:
 
     /**
      * @brief 
-     * @param os ostream
-     * @param level log level
-     * @param event log event
+     * @param[in] os ostream
+     * @param[in] level log level
+     * @param[in] event log event
      */
     std::ostream & format(std::ostream & os, LogLevel::Level level, LogEvent::ptr event);    
 
