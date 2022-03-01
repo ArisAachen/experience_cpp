@@ -98,20 +98,20 @@ public:
     typedef std::shared_ptr<WriterInterface> ptr;
     /**
      * @brief try to connect to url path
-     * @param url connect path
+     * @param[in] url connect path
      */
-    virtual void connect(const std::string & url);
+    virtual void connect(const std::string & url) = 0;
 
     /**
      * @brief disconnect from server
      */
-    virtual void disconnect();
+    virtual void disconnect() = 0;
 
     /**
      * @brief write queue data to writer
-     * @param que request queue
+     * @param[in] que request queue
      */
-    virtual void write(QueueInterface::ptr que);
+    virtual void write(QueueInterface::ptr que) = 0;
 };
 
 class ModuleCfgCor : public ConfigInterface, public CollectorInterface {

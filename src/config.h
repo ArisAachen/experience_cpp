@@ -22,36 +22,41 @@
 
 #include "define.h"
 #include "interface.h"
+#include "define.pb.h"
+
 #include <memory>
 
 namespace experience {
 
-// HardwareModule use to update and upost hardware info
-class HardwareModule : public ModuleCfgCor {
+// type name T is protobuf type
+template <typename T>
+class Module : public ModuleCfgCor {
 public:
-    typedef std::shared_ptr<HardwareModule> ptr;
+    // module ptr
+    typedef std::shared_ptr<Module> ptr;
+    // protobuf share ptr
+    typedef std::shared_ptr<T> proto;
+    /**
+     * @brief Construct a new Module object
+     */
+    Module();
 
     /**
-     * @brief Construct a new Hardware Module object
+     * @brief Destroy the virtual Module object
      */
-    HardwareModule();
-
-    /**
-     * @brief Destroy the virtual Hardware Module object
-     */
-    virtual~HardwareModule();
+    virtual~Module();
 
     /**
      * @brief save config message to file
-     * @param filename save to file
+     * @param[in] filename save to file
      */
-    virtual void save_to_file(const std::string & filename = hardware_file) override;
+    virtual void save_to_file(const std::string & filename) override;
 
     /**
      * @brief load config from file
      * @param[in] filename file name
      */
-    virtual void load_from_file(const std::string & filename = hardware_file) override;
+    virtual void load_from_file(const std::string & filename) override;
 
     /**
      * @brief indicate where module need update
@@ -64,17 +69,15 @@ public:
      */
     virtual void collect(QueueInterface::ptr que) override;
 
-
     /**
      * @brief handle request result
      * @param[in] result req result
      */
     virtual void handler(ReqResult::ptr result) override;
+
+private:
+    proto info_;
 };
-
-
-
-
 
 }
 

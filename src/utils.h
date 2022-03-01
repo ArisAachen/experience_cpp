@@ -15,28 +15,33 @@
 
 namespace experience {
 
+// StringUtils use to operate string
 class StringUtils {
 public:
     /**
      * @brief sprintf string
-     * @param fmt 
-     * @param ... 
+     * @param[in] fmt 
+     * @param[in] va args 
      */
-    static const std::string sprintf(const char* fmt, ...) {
-        va_list ap;
-        
-        va_start(ap, fmt);
-        char* buf = nullptr;
-        size_t size = vasprintf(&buf, fmt, ap);
-        EXPERIENCE_ASSERT(size < 0);
-        va_end(ap);
-        return "";
-    }
+    static const std::string sprintf(const char* fmt, ...);
+};
 
+// FileUtils use to operate file
+class FileUtils  {
+public:
+    /**
+     * @brief save mesage to file
+     * @param[in] msg msg
+     * @param[in] filepath file path
+     */
+    static bool save_to_file(const std::string & msg, const std::string & filepath);
 
-
-
-
+    /**
+     * @brief load message from file
+     * @param[in] msg msg
+     * @param[in] filepath file path
+     */
+    static bool load_from_file(std::string & msg, const std::string & filepath);
 };
 
 class SystemInfo {
@@ -44,31 +49,17 @@ public:
     /**
      * @brief Get user host name
      */
-    static const std::string user() {
-        static std::string user;
-        if (user == "") {
-            std::ifstream file("/etc/hostname");
-            // check if open file successfully
-            if (file.is_open()) {
-                return "";
-            }
-            file >> user;
-            // close file
-            file.close();
-        }
-        return user;
-    }
+    static const std::string user();
 
     /**
      * @brief Get pid
      */
-    static uint64_t pid() {
-        return getpid();
-    }
+    static uint64_t pid();
 
-    static const std::string process_name() {
-        return "";
-    }
+    /**
+     * @brief Get process name
+     */
+    static const std::string process_name();
 };
 
 
