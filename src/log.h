@@ -28,6 +28,7 @@
 #include <chrono>
 #include <vector>
 #include <map>
+#include <mutex>
 
 namespace experience {
 
@@ -240,7 +241,7 @@ public:
      * @param[in] level log level
      * @param[in] event
      */
-    virtual void format(LogLevel::Level level, LogEvent::ptr event) = 0;
+    virtual void log(LogLevel::Level level, LogEvent::ptr event) = 0;
     
     /**
      * @brief Set the level object
@@ -249,6 +250,8 @@ public:
     virtual void set_level(LogLevel::Level level) = 0;
 
 protected:
+    /// mutex
+    std::mutex mutex_;
     /// log formater 
     LogFormater::ptr formater_;
     /// log level
@@ -264,9 +267,14 @@ public:
     Logger();
 
     /**
+     * @brief Destroy the Logger object
+     */
+    ~Logger();
+
+    /**
      * @brief use default log appender
      */
-    void use_default();
+    void init_default();
 
     /**
      * @brief add appender to log map

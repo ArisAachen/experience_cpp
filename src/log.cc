@@ -1,10 +1,12 @@
 #include "log.h"
 
 #include <array>
+#include <cstdlib>
 #include <locale>
 #include <ctime>
 #include <iomanip>
 #include <memory>
+#include <mutex>
 #include <sstream>
 #include <string>
 #include <tuple>
@@ -298,6 +300,11 @@ public:
     // use default appender
     using LogAppender::LogAppender;
 
+    // init
+    virtual void init() override {
+        formater_->init();
+    }
+
     /**
      * @brief Set the level object
      * @param[in] level set log level 
@@ -311,7 +318,9 @@ public:
      * @param[in] level log level
      * @param[in] event
      */
-    virtual void format(LogLevel::Level level, LogEvent::ptr event) override {
+    virtual void log(LogLevel::Level level, LogEvent::ptr event) override {
+        // should lock here
+        std::lock_guard<std::mutex> lock(mutex_);
         // if current level has lower prioperty
         // should ignore this level
         if (level > level_) 
@@ -328,10 +337,15 @@ public:
      * @brief Construct a new Sys Log Appender object
      */
     SysLogAppender(const std::string & pattern = "%T%f:%c:%l%T%m") {
+        formater_.reset(new LogFormater(pattern));
+    }
+
+    virtual void init() override {
+        formater_->init();
         // open sys log
         openlog("", LOG_CONS | LOG_PID | LOG_NDELAY , LOG_USER);
         // use debug as default
-        setlogmask(LOG_UPTO(LOG_DEBUG));
+        setlogmask(LOG_UPTO(level_to_syslog(level_)));
     }
 
     /**
@@ -387,15 +401,18 @@ public:
      * @param[in] level log level
      * @param[in] event
      */
-    virtual void format(LogLevel::Level level, LogEvent::ptr event) override {
+    virtual void log(LogLevel::Level level, LogEvent::ptr event) override {
+        // should lock here
+        std::lock_guard<std::mutex> lock(mutex_);
         // if current level has lower prioperty
         // should ignore this level
         if (level > level_) 
             return;
         // log to cout
-        const std::string msg = formater_->format(level, event);
+        std::stringstream ss;
+        formater_->format(ss, level, event);
         // log to sys log
-        syslog(level_to_syslog(level), msg.c_str(), "");
+        syslog(level_to_syslog(level), ss.str().c_str(), "");
     }
 };
 
@@ -403,8 +420,21 @@ Logger::Logger() {
     appenders_.clear();
 }
 
-void Logger::use_default() {
+Logger::~Logger() {
+    appenders_.clear();
+}
 
+// init default
+void Logger::init_default() {
+    // add system log
+    auto system_log = SysLogAppender::ptr(new SysLogAppender());
+    system_log->init();
+    add_appender("syslog", system_log);
+
+    // add console log
+    auto console_log = StdoutLogAppender::ptr(new StdoutLogAppender());
+    console_log->init();
+    add_appender("console", console_log);
 }
 
 // add log appender
@@ -423,6 +453,39 @@ void Logger::delete_appender(const std::string &name) {
     if (name == "") 
         return;
     appenders_.erase(name);
+}
+
+// log
+void Logger::log(LogLevel::Level level, LogEvent::ptr event) {
+    for (auto iter : appenders_) 
+        iter.second->log(level, event);
+}
+
+// debug
+void Logger::debug(LogEvent::ptr event) {
+    log(LogLevel::Level::Debug, event);
+}
+
+// info
+void Logger::info(LogEvent::ptr event) {
+    log(LogLevel::Level::Info, event);
+}
+
+// warn
+void Logger::warn(LogEvent::ptr event) {
+    log(LogLevel::Level::Warn, event);
+}
+
+// err
+void Logger::error(LogEvent::ptr event) {
+    log(LogLevel::Level::Err, event);
+}
+
+// err
+void Logger::fatal(LogEvent::ptr event) {
+    log(LogLevel::Level::Fatal, event);
+    // should exist
+    exit(-1);
 }
 
 
