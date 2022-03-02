@@ -24,6 +24,9 @@ public:
      * @param[in] va args 
      */
     static const std::string sprintf(const char* fmt, ...);
+
+    template<typename T>
+    static const std::string join(T & container, const std::string & sep);
 };
 
 // FileUtils use to operate file
@@ -61,7 +64,6 @@ public:
      */
     static const std::string process_name();
 };
-
 
 
 }

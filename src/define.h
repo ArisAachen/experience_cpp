@@ -22,6 +22,7 @@
 #define __EXPERIENCE_SRC_DEFINE_H__
 
 
+#include <cstddef>
 #include <memory>
 #include <string>
 namespace experience {
@@ -38,6 +39,14 @@ typedef std::shared_ptr<ReqMessage> ptr;
 struct ReqResult {
 typedef std::shared_ptr<ReqResult> ptr;
 };
+
+
+struct Data {
+typedef std::shared_ptr<Data> ptr;
+    int typ;
+    std::string data;
+};
+
 
 }
 

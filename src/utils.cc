@@ -1,8 +1,9 @@
 #include "utils.h"
-#include <bits/types/FILE.h>
+
 #include <cstdint>
 #include <fstream>
 #include <ios>
+#include <string>
 #include <unistd.h>
 
 namespace experience {
@@ -16,6 +17,24 @@ const std::string StringUtils::sprintf(const char* fmt, ...) {
         EXPERIENCE_ASSERT(size < 0);
         va_end(ap);
         return "";    
+}
+
+template<typename T>
+const std::string StringUtils::join(T & container, const std::string &sep) {
+    // check size
+    switch (container.size()) {
+    case 0:
+        return "";
+    case 1:
+        return container[0];
+    }
+
+    // get first 
+    std::string result = container[0];
+    for (auto iter : container) {
+        result.append(sep);
+        result.append(*iter);
+    }
 }
 
 // save to file
@@ -60,5 +79,9 @@ const std::string SystemInfo::user() {
 uint64_t SystemInfo::pid() {
     return getpid();
 }
+
+
+
+
 
 }

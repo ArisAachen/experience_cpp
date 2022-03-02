@@ -1,12 +1,18 @@
 #ifndef __EXPERIENCE_SRC_WRITER_H__
 #define __EXPERIENCE_SRC_WRITER_H__
 
+#include "define.h"
 #include "interface.h"
 
 #include <memory>
 #include <mutex>
 #include <map>
 #include <sqlite3.h>
+#include <string>
+#include <tuple>
+#include <utility>
+#include <vector>
+#include <condition_variable>
 
 namespace experience {
 
@@ -43,23 +49,46 @@ public:
     /**
      * @brief insert data to table
      * @param[in] name table name 
-     * @param[in] cmd insert data
+     * @param[in] match insert data
      */
     bool insert(const std::string & table, std::map<std::string, std::string> && variant);
 
     /**
      * @brief 
-     * @param[in] name 
-     * @param[in] cmd 
+     * @param[in] name table name
+     * @param[in] match condition
      */
-    bool remove(const std::string & table, const std::map<std::string, std::string> && variant);
+    bool remove(const std::string & table, const std::pair<std::string, std::string> & match);
 
-    /***/
-    bool read();
+    /**
+     * @brief read data from database
+     * @param[in] table table name
+     * @param[in] key key name
+     * @param[in] match match condition
+     * @param[out] result execute result
+     * @details
+     *  %int type
+     *  %void* static_cast value
+     */
+    bool read(const std::string & table, const std::string & key, const std::pair<std::string, std::string> & match, 
+        std::vector<std::map<std::string, Data::ptr>> & result);
 
 private:
-    // execute sql command
-    bool execute(const std::string & cmd);
+    /**
+     * @brief exec sql statement
+     * @param[in] cmd sql statement
+     */
+    bool execute_no_return(const std::string & cmd);
+
+    /**
+     * @brief exec sql statement with result
+     * @param[in] cmd 
+     * @param[out] result 
+     * @details 
+     *  %int type
+     *  %void* static_cast value
+     */
+    bool execute_with_return(const std::string & cmd, std::vector<std::map<std::string, Data::ptr>> & result);
 
 private:
     // read write lock
@@ -68,6 +97,47 @@ private:
     std::string path_ {""};
     /// sqlite instance
     sqlite3* db_ {nullptr};
+};
+
+class Queue {
+public:
+    /**
+     * @brief Construct a new Queue object
+     */
+    Queue();
+
+    /**
+     * @brief Destroy the virtual Queue object
+     */
+    virtual~Queue();
+
+    /**
+     * @brief push request to queue
+     * @param[in] msg msg
+     */
+    void push(ReqMessage::ptr msg);
+
+    /**
+     * @brief pop request from queue
+     */
+    ReqMessage::ptr pop();
+
+    /**
+     * @brief clear all queue
+     */
+    void clear();
+    
+    /**
+     * @brief debug all request message
+     */
+    void debug();
+private:
+    /// request queue
+    std::queue<ReqMessage::ptr> queue_;
+    /// write mutex
+    std::mutex mutex_;
+    /// wait condition
+    std::condition_variable empty_;
 };
 
 class DBModule : public ModuleWtrCor {
