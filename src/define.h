@@ -28,6 +28,7 @@ namespace experience {
 
 const std::string experience_dir = "/var/public/deepin-user-experience";
 const std::string hardware_file = experience_dir + "/" + "hardware";
+const std::string database_fle = experience_dir + "/" + "exp.db";
 
 struct ReqMessage {
 typedef std::shared_ptr<ReqMessage> ptr;

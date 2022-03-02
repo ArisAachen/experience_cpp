@@ -52,7 +52,7 @@ void Module<T>::load_from_file(const std::string & filename) {
 
         EXPERIENCE_FMT_INFO("config load from %s successfully, info: %s", filename.c_str(), info_->DebugString().c_str());
     } catch(std::exception & err) {
-        EXPERIENCE_FMT_ERR("load from file failed", err.what());
+        EXPERIENCE_FMT_ERR("load from file failed, err: %s", err.what());
         return;
     } 
 }
