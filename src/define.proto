@@ -64,10 +64,15 @@ message SysCfg {
     uint64 apt = 3;
 }
 
-
-
 // RSAKey store rsa public key and private key
 message RsaKey {
     string public = 1;
     string private = 2;
+}
+
+message PostSimpleData {
+    int32 rt = 1;
+    string zone = 2;
+    string unid = 3;
+    repeated string data = 4;
 }

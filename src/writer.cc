@@ -4,12 +4,17 @@
 #include "macro.h"
 #include "utils.h"
 
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <ctime>
 #include <exception>
+#include <functional>
+#include <iostream>
 #include <map>
 #include <mutex>
 #include <sqlite3.h>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -24,7 +29,7 @@ DataBase::DataBase(const std::string & path) {
 }
 
 DataBase::~DataBase() {
-    sqlite3_close_v2(db_);
+    close();
 }
 
 // open database
@@ -40,6 +45,12 @@ bool DataBase::open() {
         EXPERIENCE_FMT_ERR("database open failed, err: %s", exp.what());
         return false;
     }
+    return true;
+}
+
+bool DataBase::close() {
+    sqlite3_close_v2(db_);
+    db_ = nullptr;
     return true;
 }
 
@@ -61,7 +72,7 @@ bool DataBase::create_table(const std::string & name, const std::string &typ) {
 }
 
 // insert data to table
-bool DataBase::insert(const std::string & table, std::map<std::string, std::string> && variant) {
+bool DataBase::insert(const std::string & table, std::map<std::string, std::string> & variant) {
     // check if database is opened
     if (!is_open()) {
         EXPERIENCE_FMT_ERR("insert data into table %s failed, database is not yet open", table.c_str());
@@ -94,7 +105,7 @@ bool DataBase::insert(const std::string & table, std::map<std::string, std::stri
 }
 
 // remove data according to key
-bool DataBase::remove(const std::string &table, const std::pair<std::string, std::string> & match) {
+bool DataBase::remove(const std::string &table, const Match & match) {
     // check if database is opened
     if (!is_open()) {
         EXPERIENCE_FMT_ERR("delete data from table %s failed, database is not yet open", table.c_str());
@@ -113,8 +124,7 @@ bool DataBase::remove(const std::string &table, const std::pair<std::string, std
 }
 
 // read data from 
-bool DataBase::read(const std::string & table, const std::string & key, const std::pair<std::string, std::string> & match, 
-    std::vector<std::map<std::string, Data::ptr>> & result) {
+bool DataBase::read(const std::string & table, const std::string & key, const Match & match, Result & result) {
     // check if database is opened
     if (!is_open()) {
         EXPERIENCE_FMT_ERR("read data from table %s failed, database is not yet open", table.c_str());
@@ -134,7 +144,7 @@ bool DataBase::read(const std::string & table, const std::string & key, const st
     return execute_with_return(statement, result);
 }
 
-bool DataBase::execute_with_return(const std::string & cmd, std::vector<std::map<std::string, Data::ptr>> & result) {
+bool DataBase::execute_with_return(const std::string & cmd, Result & result) {
     // lock
     std::lock_guard<std::mutex> lock(mutex_);
     // values
@@ -281,22 +291,103 @@ DBModule::~DBModule() {
     
 }
 
-
+// connect to database
 void DBModule::connect(const std::string &url) {
+    // must nullptr
+    EXPERIENCE_ASSERT(db_ == nullptr);
+    db_.reset(new DataBase(url));
+    db_->open();
+    // create table
+    create_table(database_table);
+    // save table name
+    table_ = url;
+}
 
+// disconnect from database
+void DBModule::disconnect() {
+    // must 
+    EXPERIENCE_ASSERT(db_ != nullptr);
+    db_->close();
 }
 
 // create table
 void DBModule::create_table(const std::string & table) {
+    // table type
     const std::string typ = R"(
         Type INTEGER,
         Data TEXT,
-        Nano DATETIME,
+        Nano TIMESTAMP,
     )";
-    std::string sql = "CREATE TABLE IF NOT EXIST " + table + "(" + typ + ");";
-    EXPERIENCE_FMT_DEBUG("execute create table command %s", sql.c_str());
+    db_->create_table(table, typ);
+}
 
+const std::string DBModule::get_table() {
+    EXPERIENCE_ASSERT(table_ != "");
+    return table_;
+}
 
+// collect message to queue
+void DBModule::collect(QueueInterface::ptr que) {
+    std::vector<std::string> vec;
+    // read data from database
+    if (!read(vec)) {
+        EXPERIENCE_FMT_ERR("read data from %s failed", table_.c_str());
+        return;
+    }
+    // create req
+    ReqMessage::ptr req(new ReqMessage());
+    req->tid = TidTyp::GeneralTid;
+    req->encode = nullptr;
+    req->call_back = std::bind(&DBModule::handler, this, std::placeholders::_1);
+    req->vec = std::move(vec);
+    // push to queue
+    que->push(req);
+}
+
+// write data to database
+void DBModule::write(QueueInterface::ptr que) {
+    while (true) {
+        // pop req
+        auto req = que->pop();
+        std::map<std::string, std::string> values;
+        values.insert(std::make_pair("Type", std::to_string(int(req->tid))));
+        // current time
+        auto duration = std::chrono::system_clock::now().time_since_epoch();
+        auto second = std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
+        values.insert(std::make_pair("Nano", std::to_string(second)));
+        for (auto iter : req->vec) {
+            values.insert(std::make_pair("Data", iter));
+            db_->insert(get_table(), values);
+        }
+        // data has been written
+        EXPERIENCE_FMT_DEBUG("data write end, data: %s", req->debug().c_str());
+    }
+}
+
+// read data
+bool DBModule::read(std::vector<std::string> & vec) {
+    // clear vector
+    const std::string key = "Data";
+    vec.clear();
+    DataBase::Result result;
+    if (!db_->read(get_table(), key, std::make_pair("", ""), result))
+        return false;
+
+    // parse result 
+    for (auto iter : result) {
+        // try to find
+        auto finder = iter.find(key);
+        // check if already in map end
+        if (finder == iter.end()) 
+            continue;
+        // parse 
+        auto data = finder->second;
+        EXPERIENCE_ASSERT(data->typ == SQLITE_TEXT);
+        // text can direct convert to string
+        // dont need to parse here
+        vec.emplace_back(data->data);
+    }
+    return true;
 }
 
 

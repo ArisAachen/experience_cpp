@@ -23,8 +23,27 @@ public:
      * @param[in] fmt 
      * @param[in] va args 
      */
-    static const std::string sprintf(const char* fmt, ...);
+    static const std::string sprintf(const char* fmt, ...); 
 
+    /**
+     * @brief encode msg with base64
+     * @param[in] msg origin message
+     */
+    static const std::string base64_encode(const std::string & msg);
+
+    /**
+     * @brief decode message
+     * @param[in] msg origin message
+     */
+    static const std::string base64_decode(const std::string & msg);
+
+    /**
+     * @brief join string
+     * @tparam T must be container
+     * @param[in] container container obj
+     * @param[in] sep sep 
+     * @return const std::string 
+     */
     template<typename T>
     static const std::string join(T & container, const std::string & sep);
 };

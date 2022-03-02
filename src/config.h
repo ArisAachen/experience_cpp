@@ -21,7 +21,6 @@
 #define __EXPERIENCE_SRC_CONFIG_H__
 
 #include "define.h"
-#include "interface.h"
 #include "define.pb.h"
 
 #include <memory>

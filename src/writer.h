@@ -2,7 +2,6 @@
 #define __EXPERIENCE_SRC_WRITER_H__
 
 #include "define.h"
-#include "interface.h"
 
 #include <memory>
 #include <mutex>
@@ -19,6 +18,8 @@ namespace experience {
 class DataBase {
 public:
     typedef std::shared_ptr<DataBase> ptr;
+    typedef std::vector<std::map<std::string, Data::ptr>> Result;
+    typedef std::pair<std::string, std::string> Match;
     /**
      * @brief Construct a new Data Base object
      */
@@ -33,6 +34,11 @@ public:
      * @brief open db
      */
     bool open();
+
+    /**
+     * @brief close db
+     */
+    bool close();
 
     /**
      * @brief db is opened
@@ -51,14 +57,14 @@ public:
      * @param[in] name table name 
      * @param[in] match insert data
      */
-    bool insert(const std::string & table, std::map<std::string, std::string> && variant);
+    bool insert(const std::string & table, std::map<std::string, std::string> & variant);
 
     /**
      * @brief 
      * @param[in] name table name
      * @param[in] match condition
      */
-    bool remove(const std::string & table, const std::pair<std::string, std::string> & match);
+    bool remove(const std::string & table, const Match & match);
 
     /**
      * @brief read data from database
@@ -70,8 +76,7 @@ public:
      *  %int type
      *  %void* static_cast value
      */
-    bool read(const std::string & table, const std::string & key, const std::pair<std::string, std::string> & match, 
-        std::vector<std::map<std::string, Data::ptr>> & result);
+    bool read(const std::string & table, const std::string & key, const Match & match, Result & result);
 
 private:
     /**
@@ -80,6 +85,7 @@ private:
      */
     bool execute_no_return(const std::string & cmd);
 
+    // TODO not good design
     /**
      * @brief exec sql statement with result
      * @param[in] cmd 
@@ -88,7 +94,7 @@ private:
      *  %int type
      *  %void* static_cast value
      */
-    bool execute_with_return(const std::string & cmd, std::vector<std::map<std::string, Data::ptr>> & result);
+    bool execute_with_return(const std::string & cmd, Result & result);
 
 private:
     // read write lock
@@ -178,6 +184,12 @@ public:
      */
     virtual void handler(ReqResult::ptr result) override;
 
+public:
+    /**
+     * @brief read message from data
+     */
+    bool read(std::vector<std::string> & vec);
+
 private:
     /**
      * @brief Create a table object
@@ -185,7 +197,14 @@ private:
      */
     void create_table(const std::string & table = "exp");
 
+    /**
+     * @brief Get the table object
+     */
+    const std::string get_table();
+
 private:
+    /// table name
+    std::string table_ {""};
     /// sqlite3 instance
     DataBase::ptr db_ {nullptr};
 };
