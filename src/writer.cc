@@ -356,11 +356,12 @@ void DBModule::write(QueueInterface::ptr que) {
         auto second = std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
         values.insert(std::make_pair("Nano", std::to_string(second)));
         for (auto iter : req->vec) {
-            values.insert(std::make_pair("Data", iter));
+            std::string encode_data = StringUtils::base64_encode(iter);
+            values.insert(std::make_pair("Data", encode_data));
             db_->insert(get_table(), values);
         }
         // data has been written
-        EXPERIENCE_FMT_DEBUG("data write end, data: %s", req->debug().c_str());
+        EXPERIENCE_FMT_DEBUG("data write end, data: %s", StringUtils::join(req->vec, ", ").c_str());
     }
 }
 
@@ -385,7 +386,8 @@ bool DBModule::read(std::vector<std::string> & vec) {
         EXPERIENCE_ASSERT(data->typ == SQLITE_TEXT);
         // text can direct convert to string
         // dont need to parse here
-        vec.emplace_back(data->data);
+        std::string decode_data = StringUtils::base64_decode(data->data);
+        vec.emplace_back(decode_data);
     }
     return true;
 }

@@ -19,7 +19,6 @@
 #ifndef __EXPERIENCE_SRC_DEFINE_H__
 #define __EXPERIENCE_SRC_DEFINE_H__
 
-#include "utils.h"
 #include <cstddef>
 #include <functional>
 #include <memory>
@@ -93,11 +92,6 @@ struct ReqMessage {
     std::vector<std::string> vec;
     /// tid
     TidTyp tid;
-
-    // debug message
-    const std::string debug() {
-        return StringUtils::join(vec, ",");
-    }
 };
 
 struct Data {

@@ -2,6 +2,7 @@
 #define __EXPERIENCE_SRC_UTILS_H__
 
 #include "macro.h"
+#include "define.h"
 
 #include <cstdarg>
 #include <cstdint>
@@ -38,11 +39,49 @@ public:
     static const std::string base64_decode(const std::string & msg);
 
     /**
+     * @brief use pkcs7 to pad message
+     * @param[in] message message 
+     * @param[in] block_size padding size
+     */
+    static const std::string pkcs7_encode(const std::string & message, int block_size);
+
+    /**
+     * @brief use pkcs7 to unpad message
+     * @param[in] message message
+     */
+    static const std::string pkcs7_decode(const std::string & message);
+
+    /**
+     * @brief use aes to encode msg
+     * @param[in] msg msg
+     */
+    static const CryptResult::ptr aes_encode(const std::string & msg);
+
+    /**
+     * @brief use aes decode message
+     * @param[in] crypt_msg crypted message
+     */
+    static const std::string aes_decode(CryptResult::ptr crypt_msg);
+
+    /**
+     * @brief use rsa to encode message
+     * @param[in] key rsa public key
+     * @param[in] msg message
+     */
+    static const std::string rsa_encode(const std::string & key, const std::string & msg);
+
+    /**
+     * @brief use rsa to decode message
+     * @param[in] key rsa private key
+     * @param[in] msg message
+     */
+    static const std::string rsa_decode(const std::string & key, const std::string & msg);
+
+    /**
      * @brief join string
      * @tparam T must be container
      * @param[in] container container obj
      * @param[in] sep sep 
-     * @return const std::string 
      */
     template<typename T>
     static const std::string join(T & container, const std::string & sep);
