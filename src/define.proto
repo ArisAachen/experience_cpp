@@ -76,3 +76,14 @@ message PostSimpleData {
     string unid = 3;
     repeated string data = 4;
 }
+
+message RcvData {
+    string key = 1;
+    string data = 2;
+}
+
+message ResponseRcv {
+    int32 code = 1;
+    string msg = 2;
+    RcvData data = 3;
+}

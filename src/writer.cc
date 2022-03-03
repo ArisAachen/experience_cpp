@@ -1,5 +1,6 @@
 #include "writer.h"
 #include "define.h"
+#include "define.pb.h"
 #include "log.h"
 #include "macro.h"
 #include "utils.h"
@@ -19,6 +20,14 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <algorithm>
+
+#include <cpr/api.h>
+#include <cpr/body.h>
+#include <cpr/cprtypes.h>
+#include <cpr/response.h>
+#include <google/protobuf/stubs/status.h>
+#include <google/protobuf/util/json_util.h>
 
 namespace experience {
 
@@ -390,6 +399,141 @@ bool DBModule::read(std::vector<std::string> & vec) {
         vec.emplace_back(decode_data);
     }
     return true;
+}
+
+UrlValues::UrlValues() {
+    values_.clear();
+}
+
+void UrlValues::add(const std::string &key, const std::string &value) {
+    values_.insert(std::make_pair(key, value));
+}
+
+void UrlValues::del(const std::string &key) {
+    values_.erase(key);
+}
+
+// encode message
+const std::string UrlValues::encode() {
+    // check size
+    switch (values_.size()) {
+    case 0:
+        return "";
+    case 1:
+        values_.cend();
+        return values_.cbegin()->first + "=" + values_.cbegin()->second;
+    }
+    // add first elem
+    std::string result;
+    result.append(values_.cbegin()->first + "=" + values_.cbegin()->second);
+    auto iter = values_.cbegin()++;
+    for (; iter!= values_.cend(); iter++) {
+        result.append("&");
+        result.append(iter->first + "=" + iter->second);
+    }
+    return result;
+}
+
+// write to web
+void WebWriter::write(QueueInterface::ptr que) {
+    while (true) {
+        // pop message
+        auto req = que->pop();
+        // send data
+        auto result = send(req);
+        // call handle
+        if (req->call_back)
+            req->call_back(result);
+    }
+}
+
+// send data to web
+ReqResult::ptr WebWriter::send(ReqMessage::ptr req) {
+    // post data
+    define::PostSimpleData data;
+    // time
+    auto duration = std::chrono::system_clock::now().time_since_epoch();
+    auto second = std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
+    data.set_rt(second);
+    // time zone
+    data.set_zone(SystemInfo::get_zone());
+    // unid
+    data.set_unid(SystemInfo::get_unid());
+    // add string 
+    for (auto iter : req->vec) {
+        data.add_data(iter);
+    }
+    // request result 
+    ReqResult::ptr result;
+    // convert to json
+    namespace util = google::protobuf::util;
+    std::string msg;
+    if (!util::MessageToJsonString(data, &msg).ok()) {
+        EXPERIENCE_FMT_ERR("message cant convert to json: msg:%s", data.DebugString().c_str());
+        // unsaved result
+        result->code = ReqResultCode::WriteResultUnsavedFailed;
+        return result;
+    }
+    // 
+    auto encode_data = StringUtils::aes_encode("");
+    UrlValues param;
+    param.add("aid", SystemInfo::get_aid());
+    param.add("key", encode_data->key);
+
+    // random urls 
+    std::vector<std::string> urls = urls_;
+    std::random_shuffle(urls.begin(), urls.end());
+
+    // send data
+    cpr::Response resp;
+    for (auto iter : urls) {
+        // post url
+        std::string full_url = iter + "/" + post_unification + "?" + param.encode();
+        // post urls
+        resp = cpr::Post(full_url, cpr::Header{{"Content-Type", SystemInfo::get_content_type()}}, cpr::Body{encode_data->result});
+        // check if post successfully
+        if (resp.status_code != 200) {
+            EXPERIENCE_FMT_DEBUG("post data to web not reachable, url: %s, data: %s, state code: %d", 
+                iter.c_str(), msg.c_str(), resp.status_code);
+            continue;
+        }
+        EXPERIENCE_FMT_DEBUG("post data to web successfully, url: %s, data: %s", iter.c_str(), msg.c_str());
+        break;
+    }  
+
+    // check is post successfully
+    if (resp.status_code != 200) {
+        EXPERIENCE_ERR("post data failed, all urls not avaliable");
+        // unsaved result
+        result->code = ReqResultCode::WriteResultUnsavedFailed;
+        return result;
+    }
+    define::ResponseRcv rcv;
+    if(!util::JsonStringToMessage(resp.text,&rcv).ok()) {
+        EXPERIENCE_FMT_ERR("unmarshal rcv msg failed, msg: %s", resp.text.c_str());
+        // unsaved result
+        result->code = ReqResultCode::WriteResultUnsavedFailed;
+        return result;
+    }
+    
+    // check if request is valid for server
+    if (rcv.code() != 0) {
+        EXPERIENCE_FMT_ERR("post data failed, data is invalid: code: %d", rcv.code());
+        result->code = ReqResultCode::WriteResultUnsavedFailed;
+        return result;
+    }
+    // check if key is the same, must be the same key
+    if (rcv.data().key() != encode_data->key) {
+        EXPERIENCE_FMT_WARN("send key %s is differ with rcv key %s", encode_data->key.c_str(), rcv.data().key().c_str());
+    }
+    // result
+    result->code = ReqResultCode::WriteResultSuccess;
+    CryptResult::ptr crypted_result;
+    crypted_result->key = encode_data->key;
+    crypted_result->result = rcv.data().data();
+    // decode
+    result->msg =  StringUtils::aes_decode(crypted_result);
+    return result;
 }
 
 

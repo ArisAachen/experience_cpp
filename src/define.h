@@ -49,12 +49,25 @@ enum class ReqResultCode {
     WriteResultSavedFailed,
 };
 
+const int aes_key_length = 32;
+const int aes_iv_length = 16;
+
 // ============================================================== string define ============================================================== //
 
 const std::string experience_dir = "/var/public/deepin-user-experience";
 const std::string hardware_file = experience_dir + "/" + "hardware";
 const std::string database_fle = experience_dir + "/" + "exp.db";
 const std::string database_table = "exp";
+
+const std::string etc_dir = "/etc";
+const std::string zone_file = etc_dir + "/" + "timezone";
+
+const std::string post_aid        = "uospc2";
+const std::string post_content_type = "application/json";
+const std::string post_unification = "v2/report/unification";
+const std::string post_url_first  = "https://bdapapi1.uniontech.com";
+const std::string post_url_second = "https://bdapapi2.uniontech.com";
+const std::string post_url_third  = "https://bdapapi3.uniontech.com";
 
 // ============================================================== message define ============================================================== //
 

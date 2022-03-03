@@ -13,6 +13,8 @@
 #include <vector>
 #include <condition_variable>
 
+#include <google/protobuf/util/json_util.h>
+
 namespace experience {
 
 class DataBase {
@@ -209,9 +211,68 @@ private:
     DataBase::ptr db_ {nullptr};
 };
 
+class UrlValues {
+public:
+    /**
+     * @brief Construct a new Url Values object
+     */
+    UrlValues();
+
+    /**
+     * @brief add pair to map
+     * @param[in] key pair key
+     * @param[in] value pair value
+     */
+    void add(const std::string & key, const std::string & value);
+
+    /**
+     * @brief delete pair from map
+     * @param[in] key pair key
+     */
+    void del(const std::string & key);
+
+    /**
+     * @brief encode url value
+     */
+    const std::string encode();
+
+private:
+    std::map<std::string, std::string> values_;
+};
 
 class WebWriter : public WriterInterface {
+public:
+    typedef std::shared_ptr<WebWriter> ptr;
 
+    /**
+     * @brief try to connect to url path
+     * @param[in] url connect path
+     */
+    virtual void connect(const std::string & url) override {}
+
+    /**
+     * @brief disconnect from server
+     */
+    virtual void disconnect() override {}
+
+    /**
+     * @brief write queue data to writer
+     * @param[in] que request queue
+     */
+    virtual void write(QueueInterface::ptr que) override;
+
+private:
+    /**
+     * @brief send data to web
+     * @param[in] msg message
+     */
+    ReqResult::ptr send(ReqMessage::ptr msg);
+
+private:
+    //
+    std::string ifc_ { post_unification };
+    /// urls
+    std::vector<std::string> urls_ { post_url_first, post_url_second, post_url_third };
 };
 
 

@@ -2,16 +2,26 @@
 #include "define.h"
 #include "macro.h"
 
-
+#include <cctype>
 #include <cstdint>
+#include <cstdlib>
+#include <ctime>
 #include <fstream>
 #include <ios>
+#include <memory>
 #include <string>
-#include <unistd.h>
+#include <algorithm>
+#include <random>
 
+#include <unistd.h>
 #include <cryptopp/base64.h>
+#include <cryptopp/rsa.h>
+#include <cryptopp/aes.h>
+#include <cryptopp/config_int.h>
 #include <cryptopp/filters.h>
+#include <cryptopp/integer.h>
 #include <cryptopp/osrng.h>
+
 
 namespace experience {
 
@@ -26,6 +36,20 @@ const std::string StringUtils::sprintf(const char* fmt, ...) {
         return "";    
 }
 
+const std::string StringUtils::random(int size) {
+    // TODO should optimize code
+    static const std::string seeds = std::string("0123456789_") + std::string("ABCDEFGHIJKLMNOPQRSTUVWXYZ") 
+        + std::string("abcdefghijklmnopqrstuvwxyz");
+    // random
+    std::default_random_engine random(time(nullptr));
+    std:std::uniform_int_distribution<unsigned> range(0, sizeof(seeds) - 1);
+    std::string result;
+    for (int index = 0; index < size; index++) {
+        result += seeds[range(random)];
+    }
+    return result;
+}
+
 template<typename T>
 const std::string StringUtils::join(T & container, const std::string &sep) {
     // check size
@@ -38,7 +62,8 @@ const std::string StringUtils::join(T & container, const std::string &sep) {
 
     // get first 
     std::string result = container[0];
-    for (auto iter : container) {
+    auto iter = container.cbegin()++;
+    for (iter ; iter != container.cend(); iter++) {
         result.append(sep);
         result.append(*iter);
     }
@@ -79,6 +104,9 @@ const std::string StringUtils::pkcs7_decode(const std::string &message) {
 
 // AES encode message
 const CryptResult::ptr StringUtils::aes_encode(const std::string & msg) {
+    std::string seed = random(32);
+    CryptoPP::byte key[CryptoPP::AES::DEFAULT_KEYLENGTH];
+    return nullptr;
 }
 
 // AES decode message
@@ -86,12 +114,32 @@ const std::string StringUtils::aes_decode(CryptResult::ptr crypt_msg) {
 
 }
 
+// rsa encode
 const std::string StringUtils::rsa_encode(const std::string &key, const std::string &msg) {
+    // string source
+    CryptoPP::StringSource source(key, true);
+    CryptoPP::RSA::PublicKey rsa_key;
+    rsa_key.Load(source);
+    // encrypt
+    std::string result;
     CryptoPP::AutoSeededRandomPool pool;
+    CryptoPP::RSAES_OAEP_SHA_Encryptor e(rsa_key);
+    CryptoPP::StringSource(msg, true, new CryptoPP::PK_EncryptorFilter(pool, e, new CryptoPP::StringSink(result)));
+    return result;
 }
 
+// rsa decode
 const std::string StringUtils::rsa_decode(const std::string &key, const std::string &msg) {
-
+    // string source
+    CryptoPP::StringSource source(key, true);
+    CryptoPP::RSA::PrivateKey rsa_key;
+    rsa_key.Load(source);
+    // decrypt
+    std::string result;
+    CryptoPP::AutoSeededRandomPool pool;
+    CryptoPP::RSAES_OAEP_SHA_Decryptor e(rsa_key);
+    CryptoPP::StringSource(msg, true, new CryptoPP::PK_DecryptorFilter(pool, e, new CryptoPP::StringSink(result)));
+    return result;
 }
 
 // save to file
@@ -132,9 +180,39 @@ const std::string SystemInfo::user() {
         return user;    
 }
 
+const std::string SystemInfo::get_zone() {
+    static std::string zone;
+    if (zone == "") {
+        if (!FileUtils::load_from_file(zone, zone_file)) {
+            return "";
+        }
+    }
+    return zone;
+}
+
+static std::string unid = "";
+
 // get pid 
 uint64_t SystemInfo::pid() {
     return getpid();
+}
+
+// get unid
+const std::string SystemInfo::get_unid() {
+    return unid;
+}
+
+void SystemInfo::set_unid(const std::string &id) {
+    unid = id;
+}
+
+// post aid
+const std::string SystemInfo::get_aid() {
+    return post_aid;
+}
+
+const std::string SystemInfo::get_content_type() {
+    return post_content_type;
 }
 
 }

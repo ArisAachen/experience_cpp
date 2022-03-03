@@ -24,7 +24,13 @@ public:
      * @param[in] fmt 
      * @param[in] va args 
      */
-    static const std::string sprintf(const char* fmt, ...); 
+    static const std::string sprintf(const char* fmt, ...);
+
+    /**
+     * @brief random string
+     * @param[in] size 
+     */
+    static const std::string random(int size);
 
     /**
      * @brief encode msg with base64
@@ -121,6 +127,32 @@ public:
      * @brief Get process name
      */
     static const std::string process_name();
+
+    /**
+     * @brief Get the zone object
+     */
+    static const std::string get_zone();
+
+    /**
+     * @brief Get the unid object
+     */
+    static const std::string get_unid();
+
+    /**
+     * @brief Set the unid object
+     * @param[in] unid set unid
+     */
+    static void set_unid(const std::string& unid);
+
+    /**
+     * @brief Get the aid object
+     */
+    static const std::string get_aid();
+
+    /**
+     * @brief Get the content type object
+     */
+    static const std::string get_content_type();
 };
 
 
