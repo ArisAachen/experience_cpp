@@ -13,6 +13,7 @@
 #include <string>
 #include <fstream>
 #include <unistd.h>
+#include <vector>
 
 namespace experience {
 
@@ -32,6 +33,18 @@ public:
      */
     static const std::string random(int size);
 
+    /**
+     * @brief join string, use boost instead
+     * @tparam T must be container
+     * @param[in] container container obj
+     * @param[in] sep sep 
+     */
+    template<typename T>
+    static const std::string join(T & container, const std::string & sep);
+};
+
+class CryptorUtils {
+public:
     /**
      * @brief encode msg with base64
      * @param[in] msg origin message
@@ -82,15 +95,6 @@ public:
      * @param[in] msg message
      */
     static const std::string rsa_decode(const std::string & key, const std::string & msg);
-
-    /**
-     * @brief join string
-     * @tparam T must be container
-     * @param[in] container container obj
-     * @param[in] sep sep 
-     */
-    template<typename T>
-    static const std::string join(T & container, const std::string & sep);
 };
 
 // FileUtils use to operate file
@@ -154,6 +158,17 @@ public:
      */
     static const std::string get_content_type();
 };
+
+class DeviceUtils {
+private:
+    
+    /**
+     * @brief get module info
+     * @param[in] module module index
+     */
+    std::vector<HardwareMsg::ptr> generate(SysModuleIndex module);
+};
+
 
 
 }

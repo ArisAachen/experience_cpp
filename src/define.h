@@ -69,6 +69,10 @@ const std::string post_url_first  = "https://bdapapi1.uniontech.com";
 const std::string post_url_second = "https://bdapapi2.uniontech.com";
 const std::string post_url_third  = "https://bdapapi3.uniontech.com";
 
+// ============================================================== dbus define ============================================================== //
+
+const std::string device_manager_dbus_path = "/com/deepin/devicemanager";
+
 // ============================================================== message define ============================================================== //
 
 struct CryptResult {
@@ -113,6 +117,26 @@ struct Data {
     int typ;
     // data 
     std::string data;
+};
+
+// ============================================================== system info ============================================================== //
+
+enum class SysModuleIndex  {
+    CpuModuleIndex,
+    BoardModuleIndex,
+    MemoryModuleIndex,
+    DiskModuleValue,
+    SmartDiskModuleIndex,
+    GpuModuleIndex,
+    NetModuleIndex,
+    EtherModuleIndex,
+};
+
+// hardware info 
+struct HardwareMsg {
+    typedef std::shared_ptr<HardwareMsg> ptr;
+    std::string model;
+    std::string id;
 };
 
 // ============================================================== interface define ============================================================== //

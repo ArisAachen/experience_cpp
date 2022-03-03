@@ -26,6 +26,7 @@
 #include <cpr/body.h>
 #include <cpr/cprtypes.h>
 #include <cpr/response.h>
+#include <boost/algorithm/string/join.hpp>
 #include <google/protobuf/stubs/status.h>
 #include <google/protobuf/util/json_util.h>
 
@@ -96,8 +97,8 @@ bool DataBase::insert(const std::string & table, std::map<std::string, std::stri
         keys.emplace_back(iter.first);
     }
     // convert key and value
-    std::string db_key = StringUtils::join(keys, ",");
-    std::string db_value = StringUtils::join(values, ",");
+    std::string db_key = boost::algorithm::join(keys, ",");
+    std::string db_value = boost::algorithm::join(values, ",");
     // sql statement
     std::string statement("insert into ");
     // append table name
@@ -365,12 +366,12 @@ void DBModule::write(QueueInterface::ptr que) {
         auto second = std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
         values.insert(std::make_pair("Nano", std::to_string(second)));
         for (auto iter : req->vec) {
-            std::string encode_data = StringUtils::base64_encode(iter);
+            std::string encode_data = CryptorUtils::base64_encode(iter);
             values.insert(std::make_pair("Data", encode_data));
             db_->insert(get_table(), values);
         }
         // data has been written
-        EXPERIENCE_FMT_DEBUG("data write end, data: %s", StringUtils::join(req->vec, ", ").c_str());
+        EXPERIENCE_FMT_DEBUG("data write end, data: %s", boost::algorithm::join(req->vec, ",").c_str());
     }
 }
 
@@ -395,7 +396,7 @@ bool DBModule::read(std::vector<std::string> & vec) {
         EXPERIENCE_ASSERT(data->typ == SQLITE_TEXT);
         // text can direct convert to string
         // dont need to parse here
-        std::string decode_data = StringUtils::base64_decode(data->data);
+        std::string decode_data = CryptorUtils::base64_decode(data->data);
         vec.emplace_back(decode_data);
     }
     return true;
@@ -475,7 +476,7 @@ ReqResult::ptr WebWriter::send(ReqMessage::ptr req) {
         return result;
     }
     // 
-    auto encode_data = StringUtils::aes_encode("");
+    auto encode_data = CryptorUtils::aes_encode("");
     UrlValues param;
     param.add("aid", SystemInfo::get_aid());
     param.add("key", encode_data->key);
@@ -532,7 +533,7 @@ ReqResult::ptr WebWriter::send(ReqMessage::ptr req) {
     crypted_result->key = encode_data->key;
     crypted_result->result = rcv.data().data();
     // decode
-    result->msg =  StringUtils::aes_decode(crypted_result);
+    result->msg =  CryptorUtils::aes_decode(crypted_result);
     return result;
 }
 
