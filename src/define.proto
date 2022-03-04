@@ -21,16 +21,16 @@ message HardwareOther {
 // save hardware info last time
 message HardwareInfo {
     int32    tid = 1;
-    string os_type = 4;
-    string version = 6;
-    string uni_id = 7;
-    repeated Obj cpu = 8;
-    repeated Obj board = 9;
-    repeated Obj gpu = 10;
-    repeated Obj memory = 11;
-    repeated Obj disk = 12;
-    repeated Obj network = 13;
-    HardwareOther other = 14;
+    string os_type = 2;
+    string version = 3;
+    string uni_id = 4;
+    repeated Obj cpu = 5;
+    repeated Obj board = 6;
+    repeated Obj gpu = 7;
+    repeated Obj memory = 8;
+    repeated Obj disk = 9;
+    repeated Obj netcard = 10;
+    HardwareOther other = 11;
 }
 
 // save post abstract
@@ -86,4 +86,8 @@ message ResponseRcv {
     int32 code = 1;
     string msg = 2;
     RcvData data = 3;
+}
+
+message RcvUni {
+    string unid = 1;
 }

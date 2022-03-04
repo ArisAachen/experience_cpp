@@ -34,7 +34,7 @@ public:
     // module ptr
     typedef std::shared_ptr<Module> ptr;
     // protobuf share ptr
-    typedef std::shared_ptr<T> proto;
+    // typedef std::shared_ptr<T> proto;
     /**
      * @brief Construct a new Module object
      */
@@ -74,9 +74,40 @@ public:
      */
     virtual void handler(ReqResult::ptr result) override;
 
-private:
-    proto info_;
+protected:
+    T info_;
 };
+
+
+// TODO create two class here, but expected one
+class HardModule : Module<define::HardwareInfo> {
+public:
+    /**
+     * @brief save config message to file
+     * @param[in] filename save to file
+     */
+    virtual void load_from_file(const std::string & filename) override;
+
+    /**
+     * @brief indicate where module need update
+     */
+    virtual bool need_update() override;
+
+    /**
+     * @brief ollect message to queue
+     * @param[in] que collect queue
+     */
+    virtual void collect(QueueInterface::ptr que) override ;
+
+    /**
+     * @brief handle request result
+     * @param[in] result req result
+     */
+    virtual void handler(ReqResult::ptr result) override;
+
+
+};
+
 
 }
 

@@ -46,7 +46,7 @@ struct TableStruct_src_2fdefine_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[10]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[11]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -75,6 +75,9 @@ extern PostSimpleDataDefaultTypeInternal _PostSimpleData_default_instance_;
 class RcvData;
 struct RcvDataDefaultTypeInternal;
 extern RcvDataDefaultTypeInternal _RcvData_default_instance_;
+class RcvUni;
+struct RcvUniDefaultTypeInternal;
+extern RcvUniDefaultTypeInternal _RcvUni_default_instance_;
 class ResponseRcv;
 struct ResponseRcvDefaultTypeInternal;
 extern ResponseRcvDefaultTypeInternal _ResponseRcv_default_instance_;
@@ -93,6 +96,7 @@ template<> ::define::PostDomain* Arena::CreateMaybeMessage<::define::PostDomain>
 template<> ::define::PostInterface* Arena::CreateMaybeMessage<::define::PostInterface>(Arena*);
 template<> ::define::PostSimpleData* Arena::CreateMaybeMessage<::define::PostSimpleData>(Arena*);
 template<> ::define::RcvData* Arena::CreateMaybeMessage<::define::RcvData>(Arena*);
+template<> ::define::RcvUni* Arena::CreateMaybeMessage<::define::RcvUni>(Arena*);
 template<> ::define::ResponseRcv* Arena::CreateMaybeMessage<::define::ResponseRcv>(Arena*);
 template<> ::define::RsaKey* Arena::CreateMaybeMessage<::define::RsaKey>(Arena*);
 template<> ::define::SysCfg* Arena::CreateMaybeMessage<::define::SysCfg>(Arena*);
@@ -573,19 +577,19 @@ class HardwareInfo final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kCpuFieldNumber = 8,
-    kBoardFieldNumber = 9,
-    kGpuFieldNumber = 10,
-    kMemoryFieldNumber = 11,
-    kDiskFieldNumber = 12,
-    kNetworkFieldNumber = 13,
-    kOsTypeFieldNumber = 4,
-    kVersionFieldNumber = 6,
-    kUniIdFieldNumber = 7,
-    kOtherFieldNumber = 14,
+    kCpuFieldNumber = 5,
+    kBoardFieldNumber = 6,
+    kGpuFieldNumber = 7,
+    kMemoryFieldNumber = 8,
+    kDiskFieldNumber = 9,
+    kNetcardFieldNumber = 10,
+    kOsTypeFieldNumber = 2,
+    kVersionFieldNumber = 3,
+    kUniIdFieldNumber = 4,
+    kOtherFieldNumber = 11,
     kTidFieldNumber = 1,
   };
-  // repeated .define.Obj cpu = 8;
+  // repeated .define.Obj cpu = 5;
   int cpu_size() const;
   private:
   int _internal_cpu_size() const;
@@ -603,7 +607,7 @@ class HardwareInfo final :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::define::Obj >&
       cpu() const;
 
-  // repeated .define.Obj board = 9;
+  // repeated .define.Obj board = 6;
   int board_size() const;
   private:
   int _internal_board_size() const;
@@ -621,7 +625,7 @@ class HardwareInfo final :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::define::Obj >&
       board() const;
 
-  // repeated .define.Obj gpu = 10;
+  // repeated .define.Obj gpu = 7;
   int gpu_size() const;
   private:
   int _internal_gpu_size() const;
@@ -639,7 +643,7 @@ class HardwareInfo final :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::define::Obj >&
       gpu() const;
 
-  // repeated .define.Obj memory = 11;
+  // repeated .define.Obj memory = 8;
   int memory_size() const;
   private:
   int _internal_memory_size() const;
@@ -657,7 +661,7 @@ class HardwareInfo final :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::define::Obj >&
       memory() const;
 
-  // repeated .define.Obj disk = 12;
+  // repeated .define.Obj disk = 9;
   int disk_size() const;
   private:
   int _internal_disk_size() const;
@@ -675,25 +679,25 @@ class HardwareInfo final :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::define::Obj >&
       disk() const;
 
-  // repeated .define.Obj network = 13;
-  int network_size() const;
+  // repeated .define.Obj netcard = 10;
+  int netcard_size() const;
   private:
-  int _internal_network_size() const;
+  int _internal_netcard_size() const;
   public:
-  void clear_network();
-  ::define::Obj* mutable_network(int index);
+  void clear_netcard();
+  ::define::Obj* mutable_netcard(int index);
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::define::Obj >*
-      mutable_network();
+      mutable_netcard();
   private:
-  const ::define::Obj& _internal_network(int index) const;
-  ::define::Obj* _internal_add_network();
+  const ::define::Obj& _internal_netcard(int index) const;
+  ::define::Obj* _internal_add_netcard();
   public:
-  const ::define::Obj& network(int index) const;
-  ::define::Obj* add_network();
+  const ::define::Obj& netcard(int index) const;
+  ::define::Obj* add_netcard();
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::define::Obj >&
-      network() const;
+      netcard() const;
 
-  // string os_type = 4;
+  // string os_type = 2;
   void clear_os_type();
   const std::string& os_type() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -707,7 +711,7 @@ class HardwareInfo final :
   std::string* _internal_mutable_os_type();
   public:
 
-  // string version = 6;
+  // string version = 3;
   void clear_version();
   const std::string& version() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -721,7 +725,7 @@ class HardwareInfo final :
   std::string* _internal_mutable_version();
   public:
 
-  // string uni_id = 7;
+  // string uni_id = 4;
   void clear_uni_id();
   const std::string& uni_id() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -735,7 +739,7 @@ class HardwareInfo final :
   std::string* _internal_mutable_uni_id();
   public:
 
-  // .define.HardwareOther other = 14;
+  // .define.HardwareOther other = 11;
   bool has_other() const;
   private:
   bool _internal_has_other() const;
@@ -774,7 +778,7 @@ class HardwareInfo final :
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::define::Obj > gpu_;
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::define::Obj > memory_;
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::define::Obj > disk_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::define::Obj > network_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::define::Obj > netcard_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr os_type_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr version_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr uni_id_;
@@ -2180,6 +2184,157 @@ class ResponseRcv final :
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_src_2fdefine_2eproto;
 };
+// -------------------------------------------------------------------
+
+class RcvUni final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:define.RcvUni) */ {
+ public:
+  inline RcvUni() : RcvUni(nullptr) {}
+  ~RcvUni() override;
+  explicit constexpr RcvUni(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  RcvUni(const RcvUni& from);
+  RcvUni(RcvUni&& from) noexcept
+    : RcvUni() {
+    *this = ::std::move(from);
+  }
+
+  inline RcvUni& operator=(const RcvUni& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline RcvUni& operator=(RcvUni&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const RcvUni& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const RcvUni* internal_default_instance() {
+    return reinterpret_cast<const RcvUni*>(
+               &_RcvUni_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    10;
+
+  friend void swap(RcvUni& a, RcvUni& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(RcvUni* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(RcvUni* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  RcvUni* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<RcvUni>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const RcvUni& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const RcvUni& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(RcvUni* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "define.RcvUni";
+  }
+  protected:
+  explicit RcvUni(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kUnidFieldNumber = 1,
+  };
+  // string unid = 1;
+  void clear_unid();
+  const std::string& unid() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_unid(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_unid();
+  PROTOBUF_NODISCARD std::string* release_unid();
+  void set_allocated_unid(std::string* unid);
+  private:
+  const std::string& _internal_unid() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_unid(const std::string& value);
+  std::string* _internal_mutable_unid();
+  public:
+
+  // @@protoc_insertion_point(class_scope:define.RcvUni)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr unid_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_src_2fdefine_2eproto;
+};
 // ===================================================================
 
 
@@ -2474,7 +2629,7 @@ inline void HardwareInfo::set_tid(int32_t value) {
   // @@protoc_insertion_point(field_set:define.HardwareInfo.tid)
 }
 
-// string os_type = 4;
+// string os_type = 2;
 inline void HardwareInfo::clear_os_type() {
   os_type_.ClearToEmpty();
 }
@@ -2525,7 +2680,7 @@ inline void HardwareInfo::set_allocated_os_type(std::string* os_type) {
   // @@protoc_insertion_point(field_set_allocated:define.HardwareInfo.os_type)
 }
 
-// string version = 6;
+// string version = 3;
 inline void HardwareInfo::clear_version() {
   version_.ClearToEmpty();
 }
@@ -2576,7 +2731,7 @@ inline void HardwareInfo::set_allocated_version(std::string* version) {
   // @@protoc_insertion_point(field_set_allocated:define.HardwareInfo.version)
 }
 
-// string uni_id = 7;
+// string uni_id = 4;
 inline void HardwareInfo::clear_uni_id() {
   uni_id_.ClearToEmpty();
 }
@@ -2627,7 +2782,7 @@ inline void HardwareInfo::set_allocated_uni_id(std::string* uni_id) {
   // @@protoc_insertion_point(field_set_allocated:define.HardwareInfo.uni_id)
 }
 
-// repeated .define.Obj cpu = 8;
+// repeated .define.Obj cpu = 5;
 inline int HardwareInfo::_internal_cpu_size() const {
   return cpu_.size();
 }
@@ -2667,7 +2822,7 @@ HardwareInfo::cpu() const {
   return cpu_;
 }
 
-// repeated .define.Obj board = 9;
+// repeated .define.Obj board = 6;
 inline int HardwareInfo::_internal_board_size() const {
   return board_.size();
 }
@@ -2707,7 +2862,7 @@ HardwareInfo::board() const {
   return board_;
 }
 
-// repeated .define.Obj gpu = 10;
+// repeated .define.Obj gpu = 7;
 inline int HardwareInfo::_internal_gpu_size() const {
   return gpu_.size();
 }
@@ -2747,7 +2902,7 @@ HardwareInfo::gpu() const {
   return gpu_;
 }
 
-// repeated .define.Obj memory = 11;
+// repeated .define.Obj memory = 8;
 inline int HardwareInfo::_internal_memory_size() const {
   return memory_.size();
 }
@@ -2787,7 +2942,7 @@ HardwareInfo::memory() const {
   return memory_;
 }
 
-// repeated .define.Obj disk = 12;
+// repeated .define.Obj disk = 9;
 inline int HardwareInfo::_internal_disk_size() const {
   return disk_.size();
 }
@@ -2827,47 +2982,47 @@ HardwareInfo::disk() const {
   return disk_;
 }
 
-// repeated .define.Obj network = 13;
-inline int HardwareInfo::_internal_network_size() const {
-  return network_.size();
+// repeated .define.Obj netcard = 10;
+inline int HardwareInfo::_internal_netcard_size() const {
+  return netcard_.size();
 }
-inline int HardwareInfo::network_size() const {
-  return _internal_network_size();
+inline int HardwareInfo::netcard_size() const {
+  return _internal_netcard_size();
 }
-inline void HardwareInfo::clear_network() {
-  network_.Clear();
+inline void HardwareInfo::clear_netcard() {
+  netcard_.Clear();
 }
-inline ::define::Obj* HardwareInfo::mutable_network(int index) {
-  // @@protoc_insertion_point(field_mutable:define.HardwareInfo.network)
-  return network_.Mutable(index);
+inline ::define::Obj* HardwareInfo::mutable_netcard(int index) {
+  // @@protoc_insertion_point(field_mutable:define.HardwareInfo.netcard)
+  return netcard_.Mutable(index);
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::define::Obj >*
-HardwareInfo::mutable_network() {
-  // @@protoc_insertion_point(field_mutable_list:define.HardwareInfo.network)
-  return &network_;
+HardwareInfo::mutable_netcard() {
+  // @@protoc_insertion_point(field_mutable_list:define.HardwareInfo.netcard)
+  return &netcard_;
 }
-inline const ::define::Obj& HardwareInfo::_internal_network(int index) const {
-  return network_.Get(index);
+inline const ::define::Obj& HardwareInfo::_internal_netcard(int index) const {
+  return netcard_.Get(index);
 }
-inline const ::define::Obj& HardwareInfo::network(int index) const {
-  // @@protoc_insertion_point(field_get:define.HardwareInfo.network)
-  return _internal_network(index);
+inline const ::define::Obj& HardwareInfo::netcard(int index) const {
+  // @@protoc_insertion_point(field_get:define.HardwareInfo.netcard)
+  return _internal_netcard(index);
 }
-inline ::define::Obj* HardwareInfo::_internal_add_network() {
-  return network_.Add();
+inline ::define::Obj* HardwareInfo::_internal_add_netcard() {
+  return netcard_.Add();
 }
-inline ::define::Obj* HardwareInfo::add_network() {
-  ::define::Obj* _add = _internal_add_network();
-  // @@protoc_insertion_point(field_add:define.HardwareInfo.network)
+inline ::define::Obj* HardwareInfo::add_netcard() {
+  ::define::Obj* _add = _internal_add_netcard();
+  // @@protoc_insertion_point(field_add:define.HardwareInfo.netcard)
   return _add;
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::define::Obj >&
-HardwareInfo::network() const {
-  // @@protoc_insertion_point(field_list:define.HardwareInfo.network)
-  return network_;
+HardwareInfo::netcard() const {
+  // @@protoc_insertion_point(field_list:define.HardwareInfo.netcard)
+  return netcard_;
 }
 
-// .define.HardwareOther other = 14;
+// .define.HardwareOther other = 11;
 inline bool HardwareInfo::_internal_has_other() const {
   return this != internal_default_instance() && other_ != nullptr;
 }
@@ -4330,9 +4485,66 @@ inline void ResponseRcv::set_allocated_data(::define::RcvData* data) {
   // @@protoc_insertion_point(field_set_allocated:define.ResponseRcv.data)
 }
 
+// -------------------------------------------------------------------
+
+// RcvUni
+
+// string unid = 1;
+inline void RcvUni::clear_unid() {
+  unid_.ClearToEmpty();
+}
+inline const std::string& RcvUni::unid() const {
+  // @@protoc_insertion_point(field_get:define.RcvUni.unid)
+  return _internal_unid();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void RcvUni::set_unid(ArgT0&& arg0, ArgT... args) {
+ 
+ unid_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:define.RcvUni.unid)
+}
+inline std::string* RcvUni::mutable_unid() {
+  std::string* _s = _internal_mutable_unid();
+  // @@protoc_insertion_point(field_mutable:define.RcvUni.unid)
+  return _s;
+}
+inline const std::string& RcvUni::_internal_unid() const {
+  return unid_.Get();
+}
+inline void RcvUni::_internal_set_unid(const std::string& value) {
+  
+  unid_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* RcvUni::_internal_mutable_unid() {
+  
+  return unid_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* RcvUni::release_unid() {
+  // @@protoc_insertion_point(field_release:define.RcvUni.unid)
+  return unid_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void RcvUni::set_allocated_unid(std::string* unid) {
+  if (unid != nullptr) {
+    
+  } else {
+    
+  }
+  unid_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), unid,
+      GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (unid_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    unid_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:define.RcvUni.unid)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

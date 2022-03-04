@@ -61,6 +61,8 @@ const std::string database_table = "exp";
 
 const std::string etc_dir = "/etc";
 const std::string zone_file = etc_dir + "/" + "timezone";
+const std::string machine_id_file = etc_dir + "/"  + "machine-id";
+const std::string apt_token_file = etc_dir + "/" + "apt" + "/" + "apt.conf.d" + "/" + "99lastore-token.conf";
 
 const std::string post_aid        = "uospc2";
 const std::string post_content_type = "application/json";

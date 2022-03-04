@@ -51,7 +51,7 @@ constexpr HardwareInfo::HardwareInfo(
   , gpu_()
   , memory_()
   , disk_()
-  , network_()
+  , netcard_()
   , os_type_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , version_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , uni_id_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
@@ -172,8 +172,20 @@ struct ResponseRcvDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT ResponseRcvDefaultTypeInternal _ResponseRcv_default_instance_;
+constexpr RcvUni::RcvUni(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : unid_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string){}
+struct RcvUniDefaultTypeInternal {
+  constexpr RcvUniDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~RcvUniDefaultTypeInternal() {}
+  union {
+    RcvUni _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT RcvUniDefaultTypeInternal _RcvUni_default_instance_;
 }  // namespace define
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_src_2fdefine_2eproto[10];
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_src_2fdefine_2eproto[11];
 static constexpr ::PROTOBUF_NAMESPACE_ID::EnumDescriptor const** file_level_enum_descriptors_src_2fdefine_2eproto = nullptr;
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_src_2fdefine_2eproto = nullptr;
 
@@ -210,7 +222,7 @@ const uint32_t TableStruct_src_2fdefine_2eproto::offsets[] PROTOBUF_SECTION_VARI
   PROTOBUF_FIELD_OFFSET(::define::HardwareInfo, gpu_),
   PROTOBUF_FIELD_OFFSET(::define::HardwareInfo, memory_),
   PROTOBUF_FIELD_OFFSET(::define::HardwareInfo, disk_),
-  PROTOBUF_FIELD_OFFSET(::define::HardwareInfo, network_),
+  PROTOBUF_FIELD_OFFSET(::define::HardwareInfo, netcard_),
   PROTOBUF_FIELD_OFFSET(::define::HardwareInfo, other_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::define::PostDomain, _internal_metadata_),
@@ -283,6 +295,13 @@ const uint32_t TableStruct_src_2fdefine_2eproto::offsets[] PROTOBUF_SECTION_VARI
   PROTOBUF_FIELD_OFFSET(::define::ResponseRcv, code_),
   PROTOBUF_FIELD_OFFSET(::define::ResponseRcv, msg_),
   PROTOBUF_FIELD_OFFSET(::define::ResponseRcv, data_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::define::RcvUni, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::define::RcvUni, unid_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::define::Obj)},
@@ -295,6 +314,7 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 78, -1, -1, sizeof(::define::PostSimpleData)},
   { 88, -1, -1, sizeof(::define::RcvData)},
   { 96, -1, -1, sizeof(::define::ResponseRcv)},
+  { 105, -1, -1, sizeof(::define::RcvUni)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -308,6 +328,7 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::define::_PostSimpleData_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::define::_RcvData_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::define::_ResponseRcv_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::define::_RcvUni_default_instance_),
 };
 
 const char descriptor_table_protodef_src_2fdefine_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -315,12 +336,12 @@ const char descriptor_table_protodef_src_2fdefine_2eproto[] PROTOBUF_SECTION_VAR
   "el\030\001 \001(\t\022\n\n\002id\030\002 \001(\t\"=\n\rHardwareOther\022\017\n"
   "\007machine\030\001 \001(\t\022\013\n\003apt\030\002 \001(\t\022\016\n\006active\030\003 "
   "\001(\t\"\231\002\n\014HardwareInfo\022\013\n\003tid\030\001 \001(\005\022\017\n\007os_"
-  "type\030\004 \001(\t\022\017\n\007version\030\006 \001(\t\022\016\n\006uni_id\030\007 "
-  "\001(\t\022\030\n\003cpu\030\010 \003(\0132\013.define.Obj\022\032\n\005board\030\t"
-  " \003(\0132\013.define.Obj\022\030\n\003gpu\030\n \003(\0132\013.define."
-  "Obj\022\033\n\006memory\030\013 \003(\0132\013.define.Obj\022\031\n\004disk"
-  "\030\014 \003(\0132\013.define.Obj\022\034\n\007network\030\r \003(\0132\013.d"
-  "efine.Obj\022$\n\005other\030\016 \001(\0132\025.define.Hardwa"
+  "type\030\002 \001(\t\022\017\n\007version\030\003 \001(\t\022\016\n\006uni_id\030\004 "
+  "\001(\t\022\030\n\003cpu\030\005 \003(\0132\013.define.Obj\022\032\n\005board\030\006"
+  " \003(\0132\013.define.Obj\022\030\n\003gpu\030\007 \003(\0132\013.define."
+  "Obj\022\033\n\006memory\030\010 \003(\0132\013.define.Obj\022\031\n\004disk"
+  "\030\t \003(\0132\013.define.Obj\022\034\n\007netcard\030\n \003(\0132\013.d"
+  "efine.Obj\022$\n\005other\030\013 \001(\0132\025.define.Hardwa"
   "reOther\",\n\nPostDomain\022\020\n\010url_path\030\001 \001(\t\022"
   "\014\n\004time\030\002 \001(\004\"\366\001\n\rPostInterface\022#\n\007domai"
   "ns\030\001 \003(\0132\022.define.PostDomain\022\013\n\003aid\030\002 \001("
@@ -335,13 +356,13 @@ const char descriptor_table_protodef_src_2fdefine_2eproto[] PROTOBUF_SECTION_VAR
   "e\030\002 \001(\t\022\014\n\004unid\030\003 \001(\t\022\014\n\004data\030\004 \003(\t\"$\n\007R"
   "cvData\022\013\n\003key\030\001 \001(\t\022\014\n\004data\030\002 \001(\t\"G\n\013Res"
   "ponseRcv\022\014\n\004code\030\001 \001(\005\022\013\n\003msg\030\002 \001(\t\022\035\n\004d"
-  "ata\030\003 \001(\0132\017.define.RcvDataB\013Z\t./;defineb"
-  "\006proto3"
+  "ata\030\003 \001(\0132\017.define.RcvData\"\026\n\006RcvUni\022\014\n\004"
+  "unid\030\001 \001(\tB\013Z\t./;defineb\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_src_2fdefine_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_src_2fdefine_2eproto = {
-  false, false, 1007, descriptor_table_protodef_src_2fdefine_2eproto, "src/define.proto", 
-  &descriptor_table_src_2fdefine_2eproto_once, nullptr, 0, 10,
+  false, false, 1031, descriptor_table_protodef_src_2fdefine_2eproto, "src/define.proto", 
+  &descriptor_table_src_2fdefine_2eproto_once, nullptr, 0, 11,
   schemas, file_default_instances, TableStruct_src_2fdefine_2eproto::offsets,
   file_level_metadata_src_2fdefine_2eproto, file_level_enum_descriptors_src_2fdefine_2eproto, file_level_service_descriptors_src_2fdefine_2eproto,
 };
@@ -925,7 +946,7 @@ HardwareInfo::HardwareInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
   gpu_(arena),
   memory_(arena),
   disk_(arena),
-  network_(arena) {
+  netcard_(arena) {
   SharedCtor();
   if (!is_message_owned) {
     RegisterArenaDtor(arena);
@@ -939,7 +960,7 @@ HardwareInfo::HardwareInfo(const HardwareInfo& from)
       gpu_(from.gpu_),
       memory_(from.memory_),
       disk_(from.disk_),
-      network_(from.network_) {
+      netcard_(from.netcard_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   os_type_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -1029,7 +1050,7 @@ void HardwareInfo::Clear() {
   gpu_.Clear();
   memory_.Clear();
   disk_.Clear();
-  network_.Clear();
+  netcard_.Clear();
   os_type_.ClearToEmpty();
   version_.ClearToEmpty();
   uni_id_.ClearToEmpty();
@@ -1055,9 +1076,9 @@ const char* HardwareInfo::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_I
         } else
           goto handle_unusual;
         continue;
-      // string os_type = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
+      // string os_type = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
           auto str = _internal_mutable_os_type();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "define.HardwareInfo.os_type"));
@@ -1065,9 +1086,9 @@ const char* HardwareInfo::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_I
         } else
           goto handle_unusual;
         continue;
-      // string version = 6;
-      case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 50)) {
+      // string version = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
           auto str = _internal_mutable_version();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "define.HardwareInfo.version"));
@@ -1075,9 +1096,9 @@ const char* HardwareInfo::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_I
         } else
           goto handle_unusual;
         continue;
-      // string uni_id = 7;
-      case 7:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 58)) {
+      // string uni_id = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
           auto str = _internal_mutable_uni_id();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "define.HardwareInfo.uni_id"));
@@ -1085,87 +1106,87 @@ const char* HardwareInfo::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_I
         } else
           goto handle_unusual;
         continue;
-      // repeated .define.Obj cpu = 8;
-      case 8:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 66)) {
+      // repeated .define.Obj cpu = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 42)) {
           ptr -= 1;
           do {
             ptr += 1;
             ptr = ctx->ParseMessage(_internal_add_cpu(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<66>(ptr));
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<42>(ptr));
         } else
           goto handle_unusual;
         continue;
-      // repeated .define.Obj board = 9;
-      case 9:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 74)) {
+      // repeated .define.Obj board = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 50)) {
           ptr -= 1;
           do {
             ptr += 1;
             ptr = ctx->ParseMessage(_internal_add_board(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<74>(ptr));
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<50>(ptr));
         } else
           goto handle_unusual;
         continue;
-      // repeated .define.Obj gpu = 10;
-      case 10:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 82)) {
+      // repeated .define.Obj gpu = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 58)) {
           ptr -= 1;
           do {
             ptr += 1;
             ptr = ctx->ParseMessage(_internal_add_gpu(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<82>(ptr));
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<58>(ptr));
         } else
           goto handle_unusual;
         continue;
-      // repeated .define.Obj memory = 11;
-      case 11:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 90)) {
+      // repeated .define.Obj memory = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 66)) {
           ptr -= 1;
           do {
             ptr += 1;
             ptr = ctx->ParseMessage(_internal_add_memory(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<90>(ptr));
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<66>(ptr));
         } else
           goto handle_unusual;
         continue;
-      // repeated .define.Obj disk = 12;
-      case 12:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 98)) {
+      // repeated .define.Obj disk = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 74)) {
           ptr -= 1;
           do {
             ptr += 1;
             ptr = ctx->ParseMessage(_internal_add_disk(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<98>(ptr));
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<74>(ptr));
         } else
           goto handle_unusual;
         continue;
-      // repeated .define.Obj network = 13;
-      case 13:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 106)) {
+      // repeated .define.Obj netcard = 10;
+      case 10:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 82)) {
           ptr -= 1;
           do {
             ptr += 1;
-            ptr = ctx->ParseMessage(_internal_add_network(), ptr);
+            ptr = ctx->ParseMessage(_internal_add_netcard(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<106>(ptr));
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<82>(ptr));
         } else
           goto handle_unusual;
         continue;
-      // .define.HardwareOther other = 14;
-      case 14:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 114)) {
+      // .define.HardwareOther other = 11;
+      case 11:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 90)) {
           ptr = ctx->ParseMessage(_internal_mutable_other(), ptr);
           CHK_(ptr);
         } else
@@ -1206,90 +1227,90 @@ uint8_t* HardwareInfo::_InternalSerialize(
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->_internal_tid(), target);
   }
 
-  // string os_type = 4;
+  // string os_type = 2;
   if (!this->_internal_os_type().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_os_type().data(), static_cast<int>(this->_internal_os_type().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
       "define.HardwareInfo.os_type");
     target = stream->WriteStringMaybeAliased(
-        4, this->_internal_os_type(), target);
+        2, this->_internal_os_type(), target);
   }
 
-  // string version = 6;
+  // string version = 3;
   if (!this->_internal_version().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_version().data(), static_cast<int>(this->_internal_version().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
       "define.HardwareInfo.version");
     target = stream->WriteStringMaybeAliased(
-        6, this->_internal_version(), target);
+        3, this->_internal_version(), target);
   }
 
-  // string uni_id = 7;
+  // string uni_id = 4;
   if (!this->_internal_uni_id().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_uni_id().data(), static_cast<int>(this->_internal_uni_id().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
       "define.HardwareInfo.uni_id");
     target = stream->WriteStringMaybeAliased(
-        7, this->_internal_uni_id(), target);
+        4, this->_internal_uni_id(), target);
   }
 
-  // repeated .define.Obj cpu = 8;
+  // repeated .define.Obj cpu = 5;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->_internal_cpu_size()); i < n; i++) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(8, this->_internal_cpu(i), target, stream);
+      InternalWriteMessage(5, this->_internal_cpu(i), target, stream);
   }
 
-  // repeated .define.Obj board = 9;
+  // repeated .define.Obj board = 6;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->_internal_board_size()); i < n; i++) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(9, this->_internal_board(i), target, stream);
+      InternalWriteMessage(6, this->_internal_board(i), target, stream);
   }
 
-  // repeated .define.Obj gpu = 10;
+  // repeated .define.Obj gpu = 7;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->_internal_gpu_size()); i < n; i++) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(10, this->_internal_gpu(i), target, stream);
+      InternalWriteMessage(7, this->_internal_gpu(i), target, stream);
   }
 
-  // repeated .define.Obj memory = 11;
+  // repeated .define.Obj memory = 8;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->_internal_memory_size()); i < n; i++) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(11, this->_internal_memory(i), target, stream);
+      InternalWriteMessage(8, this->_internal_memory(i), target, stream);
   }
 
-  // repeated .define.Obj disk = 12;
+  // repeated .define.Obj disk = 9;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->_internal_disk_size()); i < n; i++) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(12, this->_internal_disk(i), target, stream);
+      InternalWriteMessage(9, this->_internal_disk(i), target, stream);
   }
 
-  // repeated .define.Obj network = 13;
+  // repeated .define.Obj netcard = 10;
   for (unsigned int i = 0,
-      n = static_cast<unsigned int>(this->_internal_network_size()); i < n; i++) {
+      n = static_cast<unsigned int>(this->_internal_netcard_size()); i < n; i++) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(13, this->_internal_network(i), target, stream);
+      InternalWriteMessage(10, this->_internal_netcard(i), target, stream);
   }
 
-  // .define.HardwareOther other = 14;
+  // .define.HardwareOther other = 11;
   if (this->_internal_has_other()) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessage(
-        14, _Internal::other(this), target, stream);
+        11, _Internal::other(this), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1308,70 +1329,70 @@ size_t HardwareInfo::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .define.Obj cpu = 8;
+  // repeated .define.Obj cpu = 5;
   total_size += 1UL * this->_internal_cpu_size();
   for (const auto& msg : this->cpu_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
-  // repeated .define.Obj board = 9;
+  // repeated .define.Obj board = 6;
   total_size += 1UL * this->_internal_board_size();
   for (const auto& msg : this->board_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
-  // repeated .define.Obj gpu = 10;
+  // repeated .define.Obj gpu = 7;
   total_size += 1UL * this->_internal_gpu_size();
   for (const auto& msg : this->gpu_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
-  // repeated .define.Obj memory = 11;
+  // repeated .define.Obj memory = 8;
   total_size += 1UL * this->_internal_memory_size();
   for (const auto& msg : this->memory_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
-  // repeated .define.Obj disk = 12;
+  // repeated .define.Obj disk = 9;
   total_size += 1UL * this->_internal_disk_size();
   for (const auto& msg : this->disk_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
-  // repeated .define.Obj network = 13;
-  total_size += 1UL * this->_internal_network_size();
-  for (const auto& msg : this->network_) {
+  // repeated .define.Obj netcard = 10;
+  total_size += 1UL * this->_internal_netcard_size();
+  for (const auto& msg : this->netcard_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
-  // string os_type = 4;
+  // string os_type = 2;
   if (!this->_internal_os_type().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_os_type());
   }
 
-  // string version = 6;
+  // string version = 3;
   if (!this->_internal_version().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_version());
   }
 
-  // string uni_id = 7;
+  // string uni_id = 4;
   if (!this->_internal_uni_id().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_uni_id());
   }
 
-  // .define.HardwareOther other = 14;
+  // .define.HardwareOther other = 11;
   if (this->_internal_has_other()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
@@ -1410,7 +1431,7 @@ void HardwareInfo::MergeFrom(const HardwareInfo& from) {
   gpu_.MergeFrom(from.gpu_);
   memory_.MergeFrom(from.memory_);
   disk_.MergeFrom(from.disk_);
-  network_.MergeFrom(from.network_);
+  netcard_.MergeFrom(from.netcard_);
   if (!from._internal_os_type().empty()) {
     _internal_set_os_type(from._internal_os_type());
   }
@@ -1450,7 +1471,7 @@ void HardwareInfo::InternalSwap(HardwareInfo* other) {
   gpu_.InternalSwap(&other->gpu_);
   memory_.InternalSwap(&other->memory_);
   disk_.InternalSwap(&other->disk_);
-  network_.InternalSwap(&other->network_);
+  netcard_.InternalSwap(&other->netcard_);
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
       &os_type_, lhs_arena,
@@ -3816,6 +3837,209 @@ void ResponseRcv::InternalSwap(ResponseRcv* other) {
       file_level_metadata_src_2fdefine_2eproto[9]);
 }
 
+// ===================================================================
+
+class RcvUni::_Internal {
+ public:
+};
+
+RcvUni::RcvUni(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:define.RcvUni)
+}
+RcvUni::RcvUni(const RcvUni& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  unid_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    unid_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_unid().empty()) {
+    unid_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_unid(), 
+      GetArenaForAllocation());
+  }
+  // @@protoc_insertion_point(copy_constructor:define.RcvUni)
+}
+
+inline void RcvUni::SharedCtor() {
+unid_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  unid_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+RcvUni::~RcvUni() {
+  // @@protoc_insertion_point(destructor:define.RcvUni)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void RcvUni::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  unid_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void RcvUni::ArenaDtor(void* object) {
+  RcvUni* _this = reinterpret_cast< RcvUni* >(object);
+  (void)_this;
+}
+void RcvUni::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void RcvUni::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void RcvUni::Clear() {
+// @@protoc_insertion_point(message_clear_start:define.RcvUni)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  unid_.ClearToEmpty();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* RcvUni::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string unid = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          auto str = _internal_mutable_unid();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "define.RcvUni.unid"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* RcvUni::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:define.RcvUni)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string unid = 1;
+  if (!this->_internal_unid().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_unid().data(), static_cast<int>(this->_internal_unid().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "define.RcvUni.unid");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_unid(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:define.RcvUni)
+  return target;
+}
+
+size_t RcvUni::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:define.RcvUni)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string unid = 1;
+  if (!this->_internal_unid().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_unid());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData RcvUni::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    RcvUni::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*RcvUni::GetClassData() const { return &_class_data_; }
+
+void RcvUni::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<RcvUni *>(to)->MergeFrom(
+      static_cast<const RcvUni &>(from));
+}
+
+
+void RcvUni::MergeFrom(const RcvUni& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:define.RcvUni)
+  GOOGLE_DCHECK_NE(&from, this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_unid().empty()) {
+    _internal_set_unid(from._internal_unid());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void RcvUni::CopyFrom(const RcvUni& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:define.RcvUni)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool RcvUni::IsInitialized() const {
+  return true;
+}
+
+void RcvUni::InternalSwap(RcvUni* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &unid_, lhs_arena,
+      &other->unid_, rhs_arena
+  );
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata RcvUni::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_src_2fdefine_2eproto_getter, &descriptor_table_src_2fdefine_2eproto_once,
+      file_level_metadata_src_2fdefine_2eproto[10]);
+}
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace define
 PROTOBUF_NAMESPACE_OPEN
@@ -3848,6 +4072,9 @@ template<> PROTOBUF_NOINLINE ::define::RcvData* Arena::CreateMaybeMessage< ::def
 }
 template<> PROTOBUF_NOINLINE ::define::ResponseRcv* Arena::CreateMaybeMessage< ::define::ResponseRcv >(Arena* arena) {
   return Arena::CreateMessageInternal< ::define::ResponseRcv >(arena);
+}
+template<> PROTOBUF_NOINLINE ::define::RcvUni* Arena::CreateMaybeMessage< ::define::RcvUni >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::define::RcvUni >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

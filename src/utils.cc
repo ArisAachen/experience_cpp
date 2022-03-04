@@ -232,6 +232,33 @@ const std::string SystemInfo::get_content_type() {
     return post_content_type;
 }
 
+const std::string SystemInfo::get_machine_id() {
+    static std::string machine_id;
+    if (machine_id == "") {
+        if (!FileUtils::load_from_file(machine_id, machine_id_file)) {
+            return "";
+        }
+    }
+    return machine_id;
+}
+
+const std::string SystemInfo::get_apt_token() {
+    static std::string apt_token;
+    if (apt_token == "") {
+        if (!FileUtils::load_from_file(apt_token, apt_token_file)) {
+            return "";
+        }
+        std::vector<std::string> vec;
+        boost::algorithm::split(vec, apt_token, " ");
+
+    }
+    return apt_token;
+}
+
+const std::string SystemInfo::get_active_code() {
+    return "";
+}
+
 class SysModule {
 public:
     typedef std::shared_ptr<SysModule> ptr;
@@ -709,10 +736,42 @@ std::vector<HardwareMsg::ptr> DeviceUtils::generate(SysModuleIndex module_index)
             // parse
             module->parse(part);
         }
-        hw_vec.em
+        HardwareMsg::ptr info;
+        info->model = module->get_model();
+        info->id = module->get_id();
+        hw_vec.emplace_back(info);
     }
     return hw_vec;
 }
+
+std::vector<HardwareMsg::ptr> DeviceUtils::get_cpu_info() {
+    return generate(SysModuleIndex::CpuModuleIndex);
+}
+
+std::vector<HardwareMsg::ptr> DeviceUtils::get_board_info() {
+    return generate(SysModuleIndex::BoardModuleIndex);
+}
+
+std::vector<HardwareMsg::ptr> DeviceUtils::get_memory_info() {
+    return generate(SysModuleIndex::MemoryModuleIndex);
+}
+
+std::vector<HardwareMsg::ptr> DeviceUtils::get_disk_info() {
+    return generate(SysModuleIndex::DiskModuleValue);
+}
+
+std::vector<HardwareMsg::ptr> DeviceUtils::get_smartdisk_info() {
+    return generate(SysModuleIndex::SmartDiskModuleIndex);
+}
+
+std::vector<HardwareMsg::ptr> DeviceUtils::get_gpu_info() {
+    return generate(SysModuleIndex::GpuModuleIndex);
+}
+
+std::vector<HardwareMsg::ptr> DeviceUtils::get_netcard_info() {
+    return generate(SysModuleIndex::NetModuleIndex);
+}
+
 
 
 }

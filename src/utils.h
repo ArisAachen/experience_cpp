@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <iostream>
+#include <memory>
 #include <sched.h>
 #include <sstream>
 #include <string>
@@ -157,16 +158,67 @@ public:
      * @brief Get the content type object
      */
     static const std::string get_content_type();
+
+    /**
+     * @brief Get the machine id object
+     */
+    static const std::string get_machine_id();
+
+    /**
+     * @brief Get the apt token object
+     */
+    static const std::string get_apt_token();
+
+    /**
+     * @brief Get the active code object
+     */
+    static const std::string get_active_code();
 };
 
 class DeviceUtils {
+public:
+    /**
+     * @brief Get the cpu info object
+     */
+    static std::vector<HardwareMsg::ptr> get_cpu_info();
+
+    /**
+     * @brief Get the board info object
+     */
+    static std::vector<HardwareMsg::ptr> get_board_info();
+
+    /**
+     * @brief Get the memory info object
+     */
+    static std::vector<HardwareMsg::ptr> get_memory_info();
+
+    /**
+     * @brief Get the disk info object
+     */
+    static std::vector<HardwareMsg::ptr> get_disk_info();
+
+    /**
+     * @brief Get the smart disk info object
+     */
+    static std::vector<HardwareMsg::ptr> get_smartdisk_info();
+
+    /**
+     * @brief Get the gpu info object
+     */
+    static std::vector<HardwareMsg::ptr> get_gpu_info();
+
+    /**
+     * @brief Get the netcard info object
+     */
+    static std::vector<HardwareMsg::ptr> get_netcard_info();
+
 private:
     
     /**
      * @brief get module info
      * @param[in] module module index
      */
-    std::vector<HardwareMsg::ptr> generate(SysModuleIndex module);
+    static std::vector<HardwareMsg::ptr> generate(SysModuleIndex module);
 };
 
 
