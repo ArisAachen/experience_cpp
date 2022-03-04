@@ -40,7 +40,7 @@ void Module<T>::save_to_file(const std::string & filename) {
             throw std::logic_error("write file failed");
         
         // write successfully
-        EXPERIENCE_FMT_INFO("config write to %s successfully, info: %s", filename.c_str(), info_->DebugString().c_str());
+        EXPERIENCE_FMT_INFO("config write to %s successfully, info: %s", filename.c_str(), info_.DebugString().c_str());
     } catch(std::exception & err) {
         EXPERIENCE_FMT_ERR("save to file failed", err.what());
         return;
@@ -59,7 +59,7 @@ void Module<T>::load_from_file(const std::string & filename) {
         if (!info_.ParseFromString(message)) 
             throw std::invalid_argument("message not valid");
 
-        EXPERIENCE_FMT_INFO("config load from %s successfully, info: %s", filename.c_str(), info_->DebugString().c_str());
+        EXPERIENCE_FMT_INFO("config load from %s successfully, info: %s", filename.c_str(), info_.DebugString().c_str());
     } catch(std::exception & err) {
         EXPERIENCE_FMT_ERR("load from file failed, err: %s", err.what());
         return;
@@ -71,6 +71,12 @@ template<typename T>
 bool  Module<T>::need_update() {
 
     return false;
+}
+
+// check if need update
+template<typename T>
+const std::string Module<T>::get_config_file() {
+    return "";
 }
 
 template<typename T>
@@ -138,6 +144,10 @@ bool HardModule::need_update() {
     // reset
     info_ = hw_info;
     return false;
+}
+
+const std::string HardModule::get_config_file() {
+    return hardware_file;
 }
 
 // collect hardware info

@@ -63,6 +63,11 @@ public:
     virtual bool need_update() override;
 
     /**
+     * @brief Get the config file object 
+     */
+    virtual const std::string get_config_file() override;
+
+    /**
      * @brief ollect message to queue
      * @param[in] que collect queue
      */
@@ -80,7 +85,7 @@ protected:
 
 
 // TODO create two class here, but expected one
-class HardModule : Module<define::HardwareInfo> {
+class HardModule : public Module<define::HardwareInfo> {
 public:
     /**
      * @brief save config message to file
@@ -94,6 +99,11 @@ public:
     virtual bool need_update() override;
 
     /**
+     * @brief Get the config file object 
+     */
+    virtual const std::string get_config_file() override;
+
+    /**
      * @brief ollect message to queue
      * @param[in] que collect queue
      */
@@ -104,10 +114,7 @@ public:
      * @param[in] result req result
      */
     virtual void handler(ReqResult::ptr result) override;
-
-
 };
-
 
 }
 

@@ -272,7 +272,7 @@ void LogFormater::init() {
         auto finder = items.find(std::get<0>(iter));
         // cannot find format, output origin style
         if (finder == items.end()) {
-            items_.emplace_back(StringFormatItem(std::get<1>(iter)));
+            items_.emplace_back(StringFormatItem::ptr(new StringFormatItem(std::get<1>(iter))));
         } else {
             // append 
             items_.emplace_back(finder->second(std::get<1>(iter)));

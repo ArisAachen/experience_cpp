@@ -51,9 +51,6 @@ struct DeviceManager {
     };
 };
 
-
-
-
 }
 
 namespace core {

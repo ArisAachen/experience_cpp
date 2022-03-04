@@ -107,7 +107,7 @@ private:
     sqlite3* db_ {nullptr};
 };
 
-class Queue {
+class Queue : public QueueInterface {
 public:
     /**
      * @brief Construct a new Queue object
@@ -123,17 +123,17 @@ public:
      * @brief push request to queue
      * @param[in] msg msg
      */
-    void push(ReqMessage::ptr msg);
+    virtual void push(ReqMessage::ptr msg) override;
 
     /**
      * @brief pop request from queue
      */
-    ReqMessage::ptr pop();
+    virtual ReqMessage::ptr pop() override;
 
     /**
      * @brief clear all queue
      */
-    void clear();
+    virtual void clear() override;
     
     /**
      * @brief debug all request message

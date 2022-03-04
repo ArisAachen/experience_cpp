@@ -6,6 +6,7 @@
 #include "utils.h"
 
 #include <chrono>
+#include <cpr/timeout.h>
 #include <cstddef>
 #include <cstdint>
 #include <ctime>
@@ -491,7 +492,7 @@ ReqResult::ptr WebWriter::send(ReqMessage::ptr req) {
         // post url
         std::string full_url = iter + "/" + post_unification + "?" + param.encode();
         // post urls
-        resp = cpr::Post(full_url, cpr::Header{{"Content-Type", SystemInfo::get_content_type()}}, cpr::Body{encode_data->result});
+        resp = cpr::Post(cpr::Url(full_url), cpr::Header{{"Content-Type", "application/json"}}, cpr::Body{encode_data->result}, cpr::Timeout{300});
         // check if post successfully
         if (resp.status_code != 200) {
             EXPERIENCE_FMT_DEBUG("post data to web not reachable, url: %s, data: %s, state code: %d", 

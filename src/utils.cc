@@ -32,11 +32,14 @@
 #include <core/dbus/traits/service.h>
 #include <core/dbus/types/object_path.h>
 #include <core/dbus/asio/executor.h>
+#include <core/dbus/object.h>
 #include <boost/format/format_fwd.hpp>
 #include <boost/format.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/constants.hpp>
 #include <unistd.h>
 
 
@@ -128,7 +131,7 @@ const CryptResult::ptr CryptorUtils::aes_encode(const std::string & msg) {
 
 // AES decode message
 const std::string CryptorUtils::aes_decode(CryptResult::ptr crypt_msg) {
-
+    return "";
 }
 
 // rsa encode
@@ -249,8 +252,7 @@ const std::string SystemInfo::get_apt_token() {
             return "";
         }
         std::vector<std::string> vec;
-        boost::algorithm::split(vec, apt_token, " ");
-
+        boost::algorithm::split(vec, apt_token, boost::is_any_of(","), boost::token_compress_on);
     }
     return apt_token;
 }
@@ -266,7 +268,7 @@ public:
      * @brief parse info 
      * @param[in] info multi info
      */
-    virtual void parse(const std::string & info) = 0;
+    virtual void parse(std::string & info) = 0;
     /**
      * @brief Get the model object
      */
@@ -289,12 +291,12 @@ public:
      * @brief parse cpu info
      * @param[in] info info string
      */
-    virtual void parse(const std::string & info) override {
+    virtual void parse(std::string & info) override {
         // trim all space
-        boost::algorithm::trim_left_if(info, " ");
+        boost::algorithm::trim_left_if(info, boost::algorithm::is_space());
         std::vector<std::string> vec;
         // split
-        boost::algorithm::split(vec, info, 2);
+        boost::algorithm::split(vec, info, boost::is_any_of(";"), boost::token_compress_on);
         // check size
         if (vec.size() < 2) {
             return;
@@ -359,12 +361,12 @@ public:
      * @brief parse cpu info
      * @param[in] info info string
      */
-    virtual void parse(const std::string & info) override {
+    virtual void parse(std::string & info) override {
         // trim all space
-        boost::algorithm::trim_left_if(info, " ");
+        boost::algorithm::trim_left_if(info, boost::algorithm::is_space());
         std::vector<std::string> vec;
         // split
-        boost::algorithm::split(vec, info, 2);
+        boost::algorithm::split(vec, info, boost::is_any_of(":"), boost::token_compress_on);
         // check size
         if (vec.size() < 2) {
             return;
@@ -422,12 +424,12 @@ public:
      * @brief parse cpu info
      * @param[in] info info string
      */
-    virtual void parse(const std::string & info) override {
+    virtual void parse(std::string & info) override {
         // trim all space
-        boost::algorithm::trim_left_if(info, " ");
+        boost::algorithm::trim_left_if(info, boost::algorithm::is_space());
         std::vector<std::string> vec;
         // split
-        boost::algorithm::split(vec, info, 2);
+        boost::algorithm::split(vec, info, boost::is_any_of(";"), boost::token_compress_on);
         // check size
         if (vec.size() < 2) {
             return;
@@ -492,12 +494,12 @@ public:
      * @brief parse disk info
      * @param[in] info info string
      */
-    virtual void parse(const std::string & info) override {
+    virtual void parse(std::string & info) override {
         // trim all space
-        boost::algorithm::trim_left_if(info, " ");
+        boost::algorithm::trim_left_if(info, boost::algorithm::is_space());
         std::vector<std::string> vec;
         // split
-        boost::algorithm::split(vec, info, 2);
+        boost::algorithm::split(vec, info, boost::is_any_of(";"), boost::token_compress_on);
         // check size
         if (vec.size() < 2) {
             return;
@@ -568,12 +570,12 @@ public:
      * @brief parse cpu info
      * @param[in] info info string
      */
-    virtual void parse(const std::string & info) override {
+    virtual void parse(std::string & info) override {
         // trim all space
-        boost::algorithm::trim_left_if(info, " ");
+        boost::algorithm::trim_left_if(info, boost::algorithm::is_space());
         std::vector<std::string> vec;
         // split
-        boost::algorithm::split(vec, info, 2);
+        boost::algorithm::split(vec, info, boost::is_any_of(";"), boost::token_compress_on);
         // check size
         if (vec.size() < 2) {
             return;
@@ -625,12 +627,12 @@ public:
      * @brief parse netcard info
      * @param[in] info info string
      */
-    virtual void parse(const std::string & info) override {
+    virtual void parse(std::string & info) override {
         // trim all space
-        boost::algorithm::trim_left_if(info, " ");
+        boost::algorithm::trim_left_if(info, boost::algorithm::is_space());
         std::vector<std::string> vec;
         // split
-        boost::algorithm::split(vec, info, 2);
+        boost::algorithm::split(vec, info, boost::is_any_of(";"), boost::token_compress_on);
         // check size
         if (vec.size() < 2) {
             return;
@@ -718,19 +720,19 @@ std::vector<HardwareMsg::ptr> DeviceUtils::generate(SysModuleIndex module_index)
     // create module
     auto module = SysModuleFactory::create_sys_module(module_index);
     // device info
-    std::string info = manager_obj->invoke_method_synchronously<core::DeviceManager::getInfo, std::string, std::string>(module->get_module_dmidecode());
+    auto info = manager_obj->invoke_method_synchronously<core::DeviceManager::getInfo, std::string, std::string>(module->get_module_dmidecode());
 
     // split to part
     std::vector<std::string> parts;
-    boost::algorithm::split(parts, info, "\n");
+    boost::algorithm::split(parts, info.value(), boost::is_any_of("\n"), boost::token_compress_on);
 
     // read part line
-    std::stringbuf ss;
-    std::vector<HardwareMsg> hw_vec;
+    std::istringstream ss;
+    std::vector<HardwareMsg::ptr> hw_vec;
     for (auto iter : parts) {
         // reset string
-        ss.str("");
-        ss << iter;
+        ss.clear();
+        ss.str(iter);
         std::string part;
         while (std::getline(ss, part)) {
             // parse

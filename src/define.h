@@ -143,7 +143,7 @@ struct HardwareMsg {
 
 // ============================================================== interface define ============================================================== //
 
-class CryptorInterface {
+struct CryptorInterface {
 public:
     typedef std::shared_ptr<CryptorInterface> ptr;
     /**
@@ -160,8 +160,7 @@ public:
 };
 
 // ConfigInterface read and write config file
-class ConfigInterface {
-public:
+struct ConfigInterface {
     typedef std::shared_ptr<ConfigInterface> ptr;
     /**
      * @brief save config to file
@@ -179,11 +178,15 @@ public:
      * @brief indicate where module need update
      */
     virtual bool need_update() = 0;
+
+    /**
+     * @brief Get the config file object
+     */
+    virtual const std::string get_config_file() = 0;
 };
 
 // QueueInterface use to store queue message
-class QueueInterface {
-public:
+struct QueueInterface {
     typedef std::shared_ptr<QueueInterface> ptr;
     /**
      * @brief push request message 
@@ -196,14 +199,18 @@ public:
      */
     virtual ReqMessage::ptr pop() = 0;
 
+    /**
+     * @brief clear queue
+     */
+    virtual void clear() = 0;
+
 protected:
     std::queue<ReqMessage::ptr> queue_ ;
 };
 
 // CollectorInterface collect info to queue, 
 // and handle result once info write to writer
-class CollectorInterface {
-public:
+struct CollectorInterface {
     typedef std::shared_ptr<CollectorInterface> ptr;
     /**
      * @brief ollect message to queue
@@ -218,13 +225,12 @@ public:
     virtual void handler(ReqResult::ptr result) = 0;
 };
 
-class Controller {
+struct Controller {
 
 };
 
 
-class WriterInterface {
-public:
+struct WriterInterface {
     typedef std::shared_ptr<WriterInterface> ptr;
     /**
      * @brief try to connect to url path
@@ -244,13 +250,11 @@ public:
     virtual void write(QueueInterface::ptr que) = 0;
 };
 
-class ModuleCfgCor : public ConfigInterface, public CollectorInterface {
-public:
+struct ModuleCfgCor : public ConfigInterface, public CollectorInterface {
     typedef std::shared_ptr<ModuleCfgCor> ptr;
 };
 
-class ModuleWtrCor : public CollectorInterface, public WriterInterface {
-public:
+struct ModuleWtrCor : public CollectorInterface, public WriterInterface {
     typedef std::shared_ptr<ModuleWtrCor> ptr;
 };
 
