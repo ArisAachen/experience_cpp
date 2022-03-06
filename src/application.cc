@@ -2,8 +2,10 @@
 #include "define.h"
 #include "log.h"
 #include "config.h"
+#include "utils.h"
 #include "writer.h"
 
+#include <exception>
 #include <functional>
 #include <memory>
 #include <string>
@@ -14,7 +16,11 @@ namespace experience {
 
 
 Application::Application() {
+}
 
+Application::~Application() {
+    for (auto iter : threads_) 
+        iter->join();
 }
 
 void Application::init_log() {
@@ -27,14 +33,22 @@ void Application::start() {
     EXPERIENCE_INFO(">>>>>> application start");
     // hardware module
     ModuleCfgCor::ptr hardware = ModuleCfgCor::ptr(new HardModule);
-    
-    QueueInterface::ptr que = QueueInterface::ptr(new Queue());
+    ModuleWtrCor::ptr database = ModuleWtrCor::ptr (new DBModule);
+    WriterInterface::ptr web = WriterInterface::ptr(new WebWriter);
 
-    sleep(5000);
+    // create database queue
+    QueueInterface::ptr db_queue = QueueInterface::ptr(new Queue());
+    // create web queue
+    QueueInterface::ptr web_queue = QueueInterface::ptr(new Queue());
+    // append hardware thread
+    threads_.emplace_back(Application::Thread(new std::jthread(std::bind(&CollectorInterface::collect, hardware, db_queue))));
+    // append data base queue
+    threads_.emplace_back(Application::Thread(new std::jthread(std::bind(&CollectorInterface::collect, database, web_queue))));
 
-    // create thread
-    auto th = std::thread(std::bind(&ModuleCfgCor::collect, hardware, que));
-    th.join();
+    // write database from database queue 
+    threads_.emplace_back(Application::Thread(new std::jthread(std::bind(&WriterInterface::write, database, db_queue))));
+    // write web req to web writer
+    threads_.emplace_back(Application::Thread(new std::jthread(std::bind(&WriterInterface::write, web, web_queue))));
 }
 
 void Application::init_config(std::vector<ConfigInterface::ptr> vec) {
@@ -43,5 +57,10 @@ void Application::init_config(std::vector<ConfigInterface::ptr> vec) {
         iter->load_from_file(iter->get_config_file());
 }
 
+void Application::stop() {
+    for (auto iter : threads_) {
+        iter->request_stop();
+    }
+}
 
 }

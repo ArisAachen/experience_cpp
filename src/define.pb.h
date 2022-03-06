@@ -46,7 +46,7 @@ struct TableStruct_src_2fdefine_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[11]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[13]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -54,6 +54,9 @@ struct TableStruct_src_2fdefine_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_src_2fdefine_2eproto;
 namespace define {
+class AppEntry;
+struct AppEntryDefaultTypeInternal;
+extern AppEntryDefaultTypeInternal _AppEntry_default_instance_;
 class HardwareInfo;
 struct HardwareInfoDefaultTypeInternal;
 extern HardwareInfoDefaultTypeInternal _HardwareInfo_default_instance_;
@@ -63,6 +66,9 @@ extern HardwareOtherDefaultTypeInternal _HardwareOther_default_instance_;
 class Obj;
 struct ObjDefaultTypeInternal;
 extern ObjDefaultTypeInternal _Obj_default_instance_;
+class OsTime;
+struct OsTimeDefaultTypeInternal;
+extern OsTimeDefaultTypeInternal _OsTime_default_instance_;
 class PostDomain;
 struct PostDomainDefaultTypeInternal;
 extern PostDomainDefaultTypeInternal _PostDomain_default_instance_;
@@ -89,9 +95,11 @@ struct SysCfgDefaultTypeInternal;
 extern SysCfgDefaultTypeInternal _SysCfg_default_instance_;
 }  // namespace define
 PROTOBUF_NAMESPACE_OPEN
+template<> ::define::AppEntry* Arena::CreateMaybeMessage<::define::AppEntry>(Arena*);
 template<> ::define::HardwareInfo* Arena::CreateMaybeMessage<::define::HardwareInfo>(Arena*);
 template<> ::define::HardwareOther* Arena::CreateMaybeMessage<::define::HardwareOther>(Arena*);
 template<> ::define::Obj* Arena::CreateMaybeMessage<::define::Obj>(Arena*);
+template<> ::define::OsTime* Arena::CreateMaybeMessage<::define::OsTime>(Arena*);
 template<> ::define::PostDomain* Arena::CreateMaybeMessage<::define::PostDomain>(Arena*);
 template<> ::define::PostInterface* Arena::CreateMaybeMessage<::define::PostInterface>(Arena*);
 template<> ::define::PostSimpleData* Arena::CreateMaybeMessage<::define::PostSimpleData>(Arena*);
@@ -2335,6 +2343,368 @@ class RcvUni final :
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_src_2fdefine_2eproto;
 };
+// -------------------------------------------------------------------
+
+class AppEntry final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:define.AppEntry) */ {
+ public:
+  inline AppEntry() : AppEntry(nullptr) {}
+  ~AppEntry() override;
+  explicit constexpr AppEntry(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  AppEntry(const AppEntry& from);
+  AppEntry(AppEntry&& from) noexcept
+    : AppEntry() {
+    *this = ::std::move(from);
+  }
+
+  inline AppEntry& operator=(const AppEntry& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline AppEntry& operator=(AppEntry&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const AppEntry& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const AppEntry* internal_default_instance() {
+    return reinterpret_cast<const AppEntry*>(
+               &_AppEntry_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    11;
+
+  friend void swap(AppEntry& a, AppEntry& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(AppEntry* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(AppEntry* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  AppEntry* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<AppEntry>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const AppEntry& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const AppEntry& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(AppEntry* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "define.AppEntry";
+  }
+  protected:
+  explicit AppEntry(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kIdFieldNumber = 3,
+    kPkgFieldNumber = 4,
+    kAppFieldNumber = 5,
+    kTimeFieldNumber = 2,
+    kTidFieldNumber = 1,
+  };
+  // string id = 3;
+  void clear_id();
+  const std::string& id() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_id(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_id();
+  PROTOBUF_NODISCARD std::string* release_id();
+  void set_allocated_id(std::string* id);
+  private:
+  const std::string& _internal_id() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_id(const std::string& value);
+  std::string* _internal_mutable_id();
+  public:
+
+  // string pkg = 4;
+  void clear_pkg();
+  const std::string& pkg() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_pkg(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_pkg();
+  PROTOBUF_NODISCARD std::string* release_pkg();
+  void set_allocated_pkg(std::string* pkg);
+  private:
+  const std::string& _internal_pkg() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_pkg(const std::string& value);
+  std::string* _internal_mutable_pkg();
+  public:
+
+  // string app = 5;
+  void clear_app();
+  const std::string& app() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_app(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_app();
+  PROTOBUF_NODISCARD std::string* release_app();
+  void set_allocated_app(std::string* app);
+  private:
+  const std::string& _internal_app() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_app(const std::string& value);
+  std::string* _internal_mutable_app();
+  public:
+
+  // uint64 time = 2;
+  void clear_time();
+  uint64_t time() const;
+  void set_time(uint64_t value);
+  private:
+  uint64_t _internal_time() const;
+  void _internal_set_time(uint64_t value);
+  public:
+
+  // uint32 tid = 1;
+  void clear_tid();
+  uint32_t tid() const;
+  void set_tid(uint32_t value);
+  private:
+  uint32_t _internal_tid() const;
+  void _internal_set_tid(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:define.AppEntry)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr id_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr pkg_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr app_;
+  uint64_t time_;
+  uint32_t tid_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_src_2fdefine_2eproto;
+};
+// -------------------------------------------------------------------
+
+class OsTime final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:define.OsTime) */ {
+ public:
+  inline OsTime() : OsTime(nullptr) {}
+  ~OsTime() override;
+  explicit constexpr OsTime(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  OsTime(const OsTime& from);
+  OsTime(OsTime&& from) noexcept
+    : OsTime() {
+    *this = ::std::move(from);
+  }
+
+  inline OsTime& operator=(const OsTime& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline OsTime& operator=(OsTime&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const OsTime& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const OsTime* internal_default_instance() {
+    return reinterpret_cast<const OsTime*>(
+               &_OsTime_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    12;
+
+  friend void swap(OsTime& a, OsTime& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(OsTime* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(OsTime* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  OsTime* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<OsTime>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const OsTime& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const OsTime& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(OsTime* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "define.OsTime";
+  }
+  protected:
+  explicit OsTime(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kTimeFieldNumber = 2,
+    kTidFieldNumber = 1,
+  };
+  // uint64 time = 2;
+  void clear_time();
+  uint64_t time() const;
+  void set_time(uint64_t value);
+  private:
+  uint64_t _internal_time() const;
+  void _internal_set_time(uint64_t value);
+  public:
+
+  // uint32 tid = 1;
+  void clear_tid();
+  uint32_t tid() const;
+  void set_tid(uint32_t value);
+  private:
+  uint32_t _internal_tid() const;
+  void _internal_set_tid(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:define.OsTime)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  uint64_t time_;
+  uint32_t tid_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_src_2fdefine_2eproto;
+};
 // ===================================================================
 
 
@@ -4540,9 +4910,254 @@ inline void RcvUni::set_allocated_unid(std::string* unid) {
   // @@protoc_insertion_point(field_set_allocated:define.RcvUni.unid)
 }
 
+// -------------------------------------------------------------------
+
+// AppEntry
+
+// uint32 tid = 1;
+inline void AppEntry::clear_tid() {
+  tid_ = 0u;
+}
+inline uint32_t AppEntry::_internal_tid() const {
+  return tid_;
+}
+inline uint32_t AppEntry::tid() const {
+  // @@protoc_insertion_point(field_get:define.AppEntry.tid)
+  return _internal_tid();
+}
+inline void AppEntry::_internal_set_tid(uint32_t value) {
+  
+  tid_ = value;
+}
+inline void AppEntry::set_tid(uint32_t value) {
+  _internal_set_tid(value);
+  // @@protoc_insertion_point(field_set:define.AppEntry.tid)
+}
+
+// uint64 time = 2;
+inline void AppEntry::clear_time() {
+  time_ = uint64_t{0u};
+}
+inline uint64_t AppEntry::_internal_time() const {
+  return time_;
+}
+inline uint64_t AppEntry::time() const {
+  // @@protoc_insertion_point(field_get:define.AppEntry.time)
+  return _internal_time();
+}
+inline void AppEntry::_internal_set_time(uint64_t value) {
+  
+  time_ = value;
+}
+inline void AppEntry::set_time(uint64_t value) {
+  _internal_set_time(value);
+  // @@protoc_insertion_point(field_set:define.AppEntry.time)
+}
+
+// string id = 3;
+inline void AppEntry::clear_id() {
+  id_.ClearToEmpty();
+}
+inline const std::string& AppEntry::id() const {
+  // @@protoc_insertion_point(field_get:define.AppEntry.id)
+  return _internal_id();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void AppEntry::set_id(ArgT0&& arg0, ArgT... args) {
+ 
+ id_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:define.AppEntry.id)
+}
+inline std::string* AppEntry::mutable_id() {
+  std::string* _s = _internal_mutable_id();
+  // @@protoc_insertion_point(field_mutable:define.AppEntry.id)
+  return _s;
+}
+inline const std::string& AppEntry::_internal_id() const {
+  return id_.Get();
+}
+inline void AppEntry::_internal_set_id(const std::string& value) {
+  
+  id_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* AppEntry::_internal_mutable_id() {
+  
+  return id_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* AppEntry::release_id() {
+  // @@protoc_insertion_point(field_release:define.AppEntry.id)
+  return id_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void AppEntry::set_allocated_id(std::string* id) {
+  if (id != nullptr) {
+    
+  } else {
+    
+  }
+  id_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), id,
+      GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (id_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    id_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:define.AppEntry.id)
+}
+
+// string pkg = 4;
+inline void AppEntry::clear_pkg() {
+  pkg_.ClearToEmpty();
+}
+inline const std::string& AppEntry::pkg() const {
+  // @@protoc_insertion_point(field_get:define.AppEntry.pkg)
+  return _internal_pkg();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void AppEntry::set_pkg(ArgT0&& arg0, ArgT... args) {
+ 
+ pkg_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:define.AppEntry.pkg)
+}
+inline std::string* AppEntry::mutable_pkg() {
+  std::string* _s = _internal_mutable_pkg();
+  // @@protoc_insertion_point(field_mutable:define.AppEntry.pkg)
+  return _s;
+}
+inline const std::string& AppEntry::_internal_pkg() const {
+  return pkg_.Get();
+}
+inline void AppEntry::_internal_set_pkg(const std::string& value) {
+  
+  pkg_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* AppEntry::_internal_mutable_pkg() {
+  
+  return pkg_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* AppEntry::release_pkg() {
+  // @@protoc_insertion_point(field_release:define.AppEntry.pkg)
+  return pkg_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void AppEntry::set_allocated_pkg(std::string* pkg) {
+  if (pkg != nullptr) {
+    
+  } else {
+    
+  }
+  pkg_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), pkg,
+      GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (pkg_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    pkg_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:define.AppEntry.pkg)
+}
+
+// string app = 5;
+inline void AppEntry::clear_app() {
+  app_.ClearToEmpty();
+}
+inline const std::string& AppEntry::app() const {
+  // @@protoc_insertion_point(field_get:define.AppEntry.app)
+  return _internal_app();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void AppEntry::set_app(ArgT0&& arg0, ArgT... args) {
+ 
+ app_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:define.AppEntry.app)
+}
+inline std::string* AppEntry::mutable_app() {
+  std::string* _s = _internal_mutable_app();
+  // @@protoc_insertion_point(field_mutable:define.AppEntry.app)
+  return _s;
+}
+inline const std::string& AppEntry::_internal_app() const {
+  return app_.Get();
+}
+inline void AppEntry::_internal_set_app(const std::string& value) {
+  
+  app_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* AppEntry::_internal_mutable_app() {
+  
+  return app_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* AppEntry::release_app() {
+  // @@protoc_insertion_point(field_release:define.AppEntry.app)
+  return app_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void AppEntry::set_allocated_app(std::string* app) {
+  if (app != nullptr) {
+    
+  } else {
+    
+  }
+  app_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), app,
+      GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (app_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    app_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:define.AppEntry.app)
+}
+
+// -------------------------------------------------------------------
+
+// OsTime
+
+// uint32 tid = 1;
+inline void OsTime::clear_tid() {
+  tid_ = 0u;
+}
+inline uint32_t OsTime::_internal_tid() const {
+  return tid_;
+}
+inline uint32_t OsTime::tid() const {
+  // @@protoc_insertion_point(field_get:define.OsTime.tid)
+  return _internal_tid();
+}
+inline void OsTime::_internal_set_tid(uint32_t value) {
+  
+  tid_ = value;
+}
+inline void OsTime::set_tid(uint32_t value) {
+  _internal_set_tid(value);
+  // @@protoc_insertion_point(field_set:define.OsTime.tid)
+}
+
+// uint64 time = 2;
+inline void OsTime::clear_time() {
+  time_ = uint64_t{0u};
+}
+inline uint64_t OsTime::_internal_time() const {
+  return time_;
+}
+inline uint64_t OsTime::time() const {
+  // @@protoc_insertion_point(field_get:define.OsTime.time)
+  return _internal_time();
+}
+inline void OsTime::_internal_set_time(uint64_t value) {
+  
+  time_ = value;
+}
+inline void OsTime::set_time(uint64_t value) {
+  _internal_set_time(value);
+  // @@protoc_insertion_point(field_set:define.OsTime.time)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

@@ -35,6 +35,12 @@ public:
     static const std::string random(int size);
 
     /**
+     * @brief execute command 
+     * @param[in] cmd command
+     */
+    static const std::string execute_cmd(const std::string & cmd);
+
+    /**
      * @brief join string, use boost instead
      * @tparam T must be container
      * @param[in] container container obj
@@ -173,6 +179,16 @@ public:
      * @brief Get the active code object
      */
     static const std::string get_active_code();
+
+    /**
+     * @brief Get the experience enable object
+     */
+    static const bool get_experience_enable();
+
+    /**
+     * @brief Set the experience enable object
+     */
+    static void set_experience_enable(bool enable);
 };
 
 class DeviceUtils {
@@ -221,6 +237,32 @@ private:
     static std::vector<HardwareMsg::ptr> generate(SysModuleIndex module);
 };
 
+class DBusUtils {
+public:
+    /**
+     * @brief check if session bus exist
+     * @param[in] name session bus name
+     */
+    static bool check_session_dbus_exist(const std::string & name);
+
+    /**
+     * @brief check if system bus exist
+     * @param[in] name system bus name
+     */
+    static bool check_system_dbus_exist(const std::string & name);
+
+    /**
+     * @brief wait for session bus name
+     * @param[in] name session bus name
+     */
+    static void wait_session_dbus(const std::string & name);
+
+    /**
+     * @brief wait for system bus name
+     * @param[in] name system bus name
+     */
+    static void wait_system_dbus(const std::string & name);    
+};
 
 
 }

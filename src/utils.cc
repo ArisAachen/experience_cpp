@@ -3,12 +3,16 @@
 #include "define.h"
 #include "macro.h"
 
+
 #include <cctype>
+#include <chrono>
+
 #include <cstdarg>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
+#include <exception>
 #include <fstream>
 #include <ios>
 #include <iostream>
@@ -17,6 +21,7 @@
 #include <string>
 #include <algorithm>
 #include <random>
+#include <thread>
 #include <vector>
 #include <map>
 
@@ -29,17 +34,23 @@
 #include <cryptopp/osrng.h>
 #include <core/dbus/bus.h>
 #include <core/dbus/service.h>
+#include <core/dbus/result.h>
 #include <core/dbus/traits/service.h>
 #include <core/dbus/types/object_path.h>
 #include <core/dbus/asio/executor.h>
 #include <core/dbus/object.h>
 #include <boost/format/format_fwd.hpp>
 #include <boost/format.hpp>
+#include <boost/range/concepts.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/constants.hpp>
+#include <boost/process/detail/child_decl.hpp>
+#include <boost/process/io.hpp>
+#include <boost/process/pipe.hpp>
+#include <boost/process.hpp>
 #include <unistd.h>
 
 
@@ -68,6 +79,17 @@ const std::string StringUtils::random(int size) {
         result += seeds[range(random)];
     }
     return result;
+}
+
+// execute command
+const std::string StringUtils::execute_cmd(const std::string &cmd) {
+    std::stringstream ss;
+    // execute and get result
+    boost::process::child proc(cmd, boost::process::std_out > ss);
+    // wait proc
+    proc.wait();
+    // get result 
+    return ss.str();
 }
 
 template<typename T>
@@ -259,6 +281,16 @@ const std::string SystemInfo::get_apt_token() {
 
 const std::string SystemInfo::get_active_code() {
     return "";
+}
+
+static bool experience_enable = false;
+
+const bool SystemInfo::get_experience_enable() {
+    return experience_enable;
+}
+
+void SystemInfo::set_experience_enable(bool enable) {
+    experience_enable = enable;
 }
 
 class SysModule {
@@ -709,18 +741,33 @@ Bus the_system_bus() {
     return system_bus;
 }
 
+Bus the_session_bus() {
+    // get system bus
+    static Bus sesson_bus = std::make_shared<core::dbus::Bus>(core::dbus::WellKnownBus::session);
+    return sesson_bus;
+}
+
 // generate get hardware message
 std::vector<HardwareMsg::ptr> DeviceUtils::generate(SysModuleIndex module_index) {
     // system bus
     auto sys_bus = the_system_bus();
-    sys_bus->install_executor(core::dbus::asio::make_executor(sys_bus));
-    // dbus obj
-    auto device_manager = core::dbus::Service::use_service(sys_bus, core::dbus::traits::Service<core::DeviceManager>::interface_name());
-    auto manager_obj = device_manager->object_for_path(core::dbus::types::ObjectPath(device_manager_dbus_path));
-    // create module
-    auto module = SysModuleFactory::create_sys_module(module_index);
-    // device info
-    auto info = manager_obj->invoke_method_synchronously<core::DeviceManager::getInfo, std::string, std::string>(module->get_module_dmidecode());
+    // should wait util service is on
+    DBusUtils::wait_system_dbus(core::dbus::traits::Service<core::DeviceManager>::interface_name());
+    // info 
+    core::dbus::Result<std::string> info;
+    SysModule::ptr hardware_module;
+    try {
+        sys_bus->install_executor(core::dbus::asio::make_executor(sys_bus));
+        // dbus obj
+        auto device_manager = core::dbus::Service::use_service(sys_bus, core::dbus::traits::Service<core::DeviceManager>::interface_name());
+        auto manager_obj = device_manager->object_for_path(core::dbus::types::ObjectPath(device_manager_dbus_path));
+        // create module
+        hardware_module = SysModuleFactory::create_sys_module(module_index);
+        // device info
+        info = manager_obj->invoke_method_synchronously<core::DeviceManager::getInfo, std::string, std::string>(hardware_module->get_module_dmidecode());        
+    } catch (std::exception & e) {
+        return std::vector<HardwareMsg::ptr>{};
+    }
 
     // split to part
     std::vector<std::string> parts;
@@ -736,11 +783,11 @@ std::vector<HardwareMsg::ptr> DeviceUtils::generate(SysModuleIndex module_index)
         std::string part;
         while (std::getline(ss, part)) {
             // parse
-            module->parse(part);
+            hardware_module->parse(part);
         }
         HardwareMsg::ptr info;
-        info->model = module->get_model();
-        info->id = module->get_id();
+        info->model = hardware_module->get_model();
+        info->id = hardware_module->get_id();
         hw_vec.emplace_back(info);
     }
     return hw_vec;
@@ -774,6 +821,55 @@ std::vector<HardwareMsg::ptr> DeviceUtils::get_netcard_info() {
     return generate(SysModuleIndex::NetModuleIndex);
 }
 
+bool DBusUtils::check_session_dbus_exist(const std::string &name) {
+    try {
+        // create session bus 
+        auto session_bus = the_session_bus();
+        // install
+        session_bus->install_executor(core::dbus::asio::make_executor(session_bus));
+        auto bus = core::dbus::Service::use_service(session_bus, core::dbus::traits::Service<core::DBus>::interface_name());
+        auto bus_obj = bus->object_for_path(core::dbus::types::ObjectPath("/org/freedesktop/DBus"));
+        core::dbus::Result<bool> exist = bus_obj->invoke_method_synchronously<core::DBus::NameHasOwner, bool, std::string>(name);
+        return exist.value();
+    } catch (std::exception & e) {
+        return false;
+    }
+}
 
+bool DBusUtils::check_system_dbus_exist(const std::string &name) {
+    try {
+        // create session bus 
+        auto session_bus = the_system_bus();
+        // install
+        session_bus->install_executor(core::dbus::asio::make_executor(session_bus));
+        auto bus = core::dbus::Service::use_service(session_bus, core::dbus::traits::Service<core::DBus>::interface_name());
+        auto bus_obj = bus->add_object_for_path(core::dbus::types::ObjectPath("/org/freedesktop/DBus"));
+        core::dbus::Result<bool> exist = bus_obj->invoke_method_synchronously<core::DBus::NameHasOwner, bool, std::string>(name);
+        return exist.value();
+    } catch (std::exception & e) {
+        std::cout << "system bus " << e.what();
+        return false;
+    }
+}
+
+void DBusUtils::wait_session_dbus(const std::string &name) {
+    while (true) {
+        // wait util bus found
+        if (check_session_dbus_exist(name))
+            break;
+        // sleep 5 seconds and retry
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+    }
+}
+
+void DBusUtils::wait_system_dbus(const std::string &name) {
+    while (true) {
+        // wait util bus found
+        if (check_system_dbus_exist(name))
+            break;
+        // sleep 5 seconds and retry
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+    }
+}
 
 }

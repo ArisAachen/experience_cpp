@@ -91,3 +91,16 @@ message ResponseRcv {
 message RcvUni {
     string unid = 1;
 }
+
+message AppEntry {
+    uint32 tid = 1;
+    uint64 time = 2;
+    string id = 3;
+    string pkg = 4;
+    string app = 5;
+}
+
+message OsTime {
+    uint32 tid = 1;
+    uint64 time = 2;
+}

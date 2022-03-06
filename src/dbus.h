@@ -1,14 +1,17 @@
 #ifndef __EXPERIENCE_SRC_DBUS_H__
 #define __EXPERIENCE_SRC_DBUS_H__
 
+#include <core/dbus/bus.h>
+#include <cstdint>
+#include <map>
 #include <string>
 #include <chrono>
 
 #include <core/dbus/service.h>
 #include <core/dbus/traits/service.h>
 #include <core/dbus/types/object_path.h>
-
-
+#include <tuple>
+#include <vector>
 
 namespace core {
 
@@ -16,24 +19,16 @@ struct DeviceManager {
     // method
     struct getInfo {
         typedef DeviceManager Interface;
-        static const std::string& name() {
-            static const std::string s 
-            {
-                "getInfo"
-            };
-            return s;
+        static const std::string name() {
+            return "getInfo";
         }
         inline static const std::chrono::milliseconds default_timeout() { return std::chrono::seconds{1}; }
     };
 
         // method
     struct refreshInfo {
-        static const std::string& name() {
-            static const std::string s 
-            {
-                "refreshInfo"
-            };
-            return s;
+        static const std::string name() {
+            return "refreshInfo";
         }
         typedef DeviceManager Interface;
         inline static const std::chrono::milliseconds default_timeout() { return std::chrono::seconds{1}; }
@@ -51,26 +46,106 @@ struct DeviceManager {
     };
 };
 
+struct DBus {
+    struct GetNameOwner {
+        typedef DBus Interface;
+        static const std::string name() {
+            return "GetNameOwner";
+        }
+        inline static const std::chrono::milliseconds default_timeout() { return std::chrono::seconds{1}; }
+    };
+
+    struct NameHasOwner {
+        typedef DBus Interface;
+        static const std::string name() {
+            return "NameHasOwner";
+        }
+        inline static const std::chrono::milliseconds default_timeout() { return std::chrono::seconds{1}; }
+    };
+};
+
+struct Dock {
+    struct Properties {
+        // entries
+        struct Entries {
+            inline static std::string name() {
+                return "Entries";
+            }
+            typedef Dock Interface;
+            typedef std::vector<dbus::types::ObjectPath> ValueType;
+            static const bool readable = true;
+            static const bool writable = false;
+        };
+    };
+
+    struct Signals {
+        struct EntryAdded {
+            inline static std::string name() {
+                return "EntryAdded";
+            }
+            typedef Dock Interface;            
+            typedef std::tuple<dbus::types::ObjectPath, int32_t> ArgumentType;
+        };
+
+        struct EntryRemoved {
+            inline static std::string name() {
+                return "EntryRemoved";
+            }
+            typedef Dock Interface;
+            typedef std::string ArgumentType;
+        };
+    };
+
+    struct Entry {
+        struct Properties {
+            struct WindowInfos {
+                inline static std::string name() {
+                    return "WindowInfos";
+                }
+                typedef Entry Interface;
+                typedef std::map<uint32_t, std::tuple<std::string, bool>> ArgumentType;
+            };
+            struct DesktopFile {
+                inline static std::string name() {
+                    return "DesktopFile";
+                }
+                typedef Entry Interface;
+                typedef std::string ArgumentType;
+            };
+            struct Name {
+                inline static std::string name() {
+                    return "Name";
+                }
+                typedef Entry Interface;
+                typedef std::string ArgumentType;
+            };
+        };
+    };
+};
+
 }
 
 namespace core {
 namespace dbus {
 namespace traits {
 
-
-
-
 template<>
 struct Service<core::DeviceManager> {
-    inline static const std::string& interface_name()
+    inline static const std::string interface_name()
     {
-        static const std::string s
-        {
-            "com.deepin.devicemanager"
-        };
-        return s;
+        return "com.deepin.devicemanager";
     }    
 };
+
+template<>
+struct Service<core::DBus> {
+    inline static const std::string interface_name() 
+    {
+        return "org.freedesktop.DBus";        
+    }
+};
+
+
 
 }
 }

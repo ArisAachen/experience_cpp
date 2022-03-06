@@ -3,6 +3,8 @@
 
 #include "define.h"
 
+#include <memory>
+#include <thread>
 #include <vector>
 
 namespace experience {
@@ -16,12 +18,24 @@ public:
     Application();
 
     /**
+     * @brief Destroy the virtual Application object
+     */
+    virtual~Application();
+
+    /**
      * @brief init log
      */
     void init_log();
 
-    /***/
+    /**
+     * @brief start application
+     */
     void start();
+
+    /**
+     * @brief stop application
+     */
+    void stop();
 
 private:
     /**
@@ -35,6 +49,11 @@ private:
      * @param vec 
      */
     void init_collector(std::vector<CollectorInterface> vec);
+
+private:
+    // define thread here
+    typedef std::shared_ptr<std::jthread> Thread;
+    std::vector<Thread> threads_;
 };
 
 }
