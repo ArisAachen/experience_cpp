@@ -241,13 +241,15 @@ void LogFormater::init() {
                     continue;
                 }
                 // add date time item 
-                vec.emplace_back("d", std::string(log_pattern_[index+2], n-index-2), true);
+                std::string date = log_pattern_.substr(index+2, n-index-2);
+                vec.emplace_back("d", log_pattern_.substr(index+2, n-index-2), true);
                 index = n + 1;
                 break;
             }
         }
         // add other item
-        vec.emplace_back(std::string(log_pattern_[index], 1), "", true);
+        vec.emplace_back(std::string(1, log_pattern_[index]), "", true);
+        // vec.emplace_back(std::string(log_pattern_[index], 1), "", true);
     }
 
     // format items
@@ -272,7 +274,7 @@ void LogFormater::init() {
         auto finder = items.find(std::get<0>(iter));
         // cannot find format, output origin style
         if (finder == items.end()) {
-            items_.emplace_back(StringFormatItem::ptr(new StringFormatItem(std::get<1>(iter))));
+            items_.emplace_back(FormaterItem::ptr(new StringFormatItem(std::get<0>(iter))));
         } else {
             // append 
             items_.emplace_back(finder->second(std::get<1>(iter)));
@@ -289,8 +291,11 @@ const std::string LogFormater::format(LogLevel::Level level, LogEvent::ptr event
 
 // format to os
 std::ostream & LogFormater::format(std::ostream & os, LogLevel::Level level, LogEvent::ptr event) {
-    for (auto iter : items_)
-        os << iter->format(level, event);
+    for (auto iter : items_) {
+        std::string msg = iter->format(level, event);
+        os << msg;
+    }
+        //os << iter->format(level, event);
     return os;
 }
 
@@ -298,7 +303,9 @@ std::ostream & LogFormater::format(std::ostream & os, LogLevel::Level level, Log
 class StdoutLogAppender : public LogAppender {
 public:
     // use default appender
-    using LogAppender::LogAppender;
+    StdoutLogAppender () {
+        formater_.reset(new LogFormater);
+    }
 
     // init
     virtual void init() override {

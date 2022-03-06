@@ -131,7 +131,7 @@ public:
     /**
      * @brief Get process name
      */
-    static const std::string process_name();
+    static const std::string process_name() { return "";};
 
     /**
      * @brief Get the zone object

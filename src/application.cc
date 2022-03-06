@@ -8,8 +8,14 @@
 #include <memory>
 #include <string>
 #include <thread>
+#include <unistd.h>
 
 namespace experience {
+
+
+Application::Application() {
+
+}
 
 void Application::init_log() {
     // init default log
@@ -18,13 +24,17 @@ void Application::init_log() {
 
 
 void Application::start() {
+    EXPERIENCE_INFO(">>>>>> application start");
     // hardware module
     ModuleCfgCor::ptr hardware = ModuleCfgCor::ptr(new HardModule);
     
     QueueInterface::ptr que = QueueInterface::ptr(new Queue());
 
+    sleep(5000);
+
     // create thread
-    std::thread(std::bind(&ModuleCfgCor::collect, hardware, que));
+    auto th = std::thread(std::bind(&ModuleCfgCor::collect, hardware, que));
+    th.join();
 }
 
 void Application::init_config(std::vector<ConfigInterface::ptr> vec) {

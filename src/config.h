@@ -88,6 +88,10 @@ protected:
 class HardModule : public Module<define::HardwareInfo> {
 public:
     /**
+     * @brief Construct a new Hard Module object
+     */
+    HardModule();
+    /**
      * @brief save config message to file
      * @param[in] filename save to file
      */

@@ -403,6 +403,10 @@ bool DBModule::read(std::vector<std::string> & vec) {
     return true;
 }
 
+void DBModule::handler(ReqResult::ptr result) {
+    
+}
+
 UrlValues::UrlValues() {
     values_.clear();
 }

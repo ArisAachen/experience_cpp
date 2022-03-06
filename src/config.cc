@@ -89,6 +89,10 @@ void  Module<T>::handler(ReqResult::ptr result) {
     
 }
 
+HardModule::HardModule() {
+    
+}
+
 void HardModule::load_from_file(const std::string & filename) {
     // load from file
     Module<define::HardwareInfo>::load_from_file(filename);
