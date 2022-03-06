@@ -1,17 +1,19 @@
 #ifndef __EXPERIENCE_SRC_DBUS_H__
 #define __EXPERIENCE_SRC_DBUS_H__
 
-#include <core/dbus/bus.h>
+
 #include <cstdint>
 #include <map>
 #include <string>
 #include <chrono>
+#include <tuple>
+#include <vector>
 
+#include <core/dbus/bus.h>
 #include <core/dbus/service.h>
 #include <core/dbus/traits/service.h>
 #include <core/dbus/types/object_path.h>
-#include <tuple>
-#include <vector>
+
 
 namespace core {
 
@@ -68,9 +70,10 @@ struct Dock {
     struct Properties {
         // entries
         struct Entries {
-            inline static std::string name() {
+            inline static std::string name()
+            {
                 return "Entries";
-            }
+            };
             typedef Dock Interface;
             typedef std::vector<dbus::types::ObjectPath> ValueType;
             static const bool readable = true;
@@ -103,21 +106,27 @@ struct Dock {
                     return "WindowInfos";
                 }
                 typedef Entry Interface;
-                typedef std::map<uint32_t, std::tuple<std::string, bool>> ArgumentType;
+                typedef std::map<uint32_t, std::tuple<std::string, bool>> ValueType;
+                static const bool readable = true;
+                static const bool writable = false;
             };
             struct DesktopFile {
                 inline static std::string name() {
                     return "DesktopFile";
                 }
                 typedef Entry Interface;
-                typedef std::string ArgumentType;
+                typedef std::string ValueType;
+                static const bool readable = true;
+                static const bool writable = false;                
             };
             struct Name {
                 inline static std::string name() {
                     return "Name";
                 }
                 typedef Entry Interface;
-                typedef std::string ArgumentType;
+                typedef std::string ValueType;
+                static const bool readable = true;
+                static const bool writable = false;                
             };
         };
     };
@@ -145,7 +154,24 @@ struct Service<core::DBus> {
     }
 };
 
+template<>
+struct Service<core::Dock> {
+    inline static const std::string& interface_name() 
+    {
+        static const std::string s {
+            "com.deepin.dde.daemon.Dock"
+        };
+        return  s;
+    }
+};
 
+template<>
+struct Service<core::Dock::Entry> {
+    inline static const std::string interface_name() 
+    {
+        return "com.deepin.dde.daemon.Dock.Entry";        
+    }    
+};
 
 }
 }

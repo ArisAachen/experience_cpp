@@ -186,6 +186,11 @@ public:
      */
     virtual void handler(ReqResult::ptr result) override;
 
+    /**
+     * @brief Get the remote object
+     */
+    virtual const std::string get_remote() override;
+
 public:
     /**
      * @brief read message from data
@@ -260,6 +265,11 @@ public:
      * @param[in] que request queue
      */
     virtual void write(QueueInterface::ptr que) override;
+
+    /**
+     * @brief Get the remote object
+     */
+    virtual const std::string get_remote() override;
 
 private:
     /**

@@ -403,6 +403,10 @@ bool DBModule::read(std::vector<std::string> & vec) {
     return true;
 }
 
+const std::string DBModule::get_remote()  {
+    return database_fle;
+}
+
 void DBModule::handler(ReqResult::ptr result) {
     
 }
@@ -542,5 +546,8 @@ ReqResult::ptr WebWriter::send(ReqMessage::ptr req) {
     return result;
 }
 
+const std::string WebWriter::get_remote() {
+    return "";
+}
 
 }

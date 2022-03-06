@@ -14,6 +14,7 @@
 #include <ctime>
 #include <exception>
 #include <fstream>
+#include <future>
 #include <ios>
 #include <iostream>
 #include <memory>
@@ -21,6 +22,7 @@
 #include <string>
 #include <algorithm>
 #include <random>
+#include <string_view>
 #include <thread>
 #include <vector>
 #include <map>
@@ -64,7 +66,9 @@ const std::string StringUtils::sprintf(const char* fmt, ...) {
         size_t size = vasprintf(&buf, fmt, ap);
         EXPERIENCE_ASSERT(size < 0);
         va_end(ap);
-        return "";    
+        std::string result(buf);
+        free(buf);
+        return result;    
 }
 
 const std::string StringUtils::random(int size) {
@@ -83,13 +87,13 @@ const std::string StringUtils::random(int size) {
 
 // execute command
 const std::string StringUtils::execute_cmd(const std::string &cmd) {
-    std::stringstream ss;
+    std::string msg;
     // execute and get result
-    boost::process::child proc(cmd, boost::process::std_out > ss);
+    boost::process::child proc(cmd, boost::process::std_out > msg);
     // wait proc
     proc.wait();
     // get result 
-    return ss.str();
+    return msg;
 }
 
 template<typename T>
@@ -749,14 +753,14 @@ Bus the_session_bus() {
 
 // generate get hardware message
 std::vector<HardwareMsg::ptr> DeviceUtils::generate(SysModuleIndex module_index) {
-    // system bus
-    auto sys_bus = the_system_bus();
-    // should wait util service is on
+    // should wait util service is on   
     DBusUtils::wait_system_dbus(core::dbus::traits::Service<core::DeviceManager>::interface_name());
     // info 
     core::dbus::Result<std::string> info;
     SysModule::ptr hardware_module;
     try {
+        // system bus
+        auto sys_bus = the_system_bus();
         sys_bus->install_executor(core::dbus::asio::make_executor(sys_bus));
         // dbus obj
         auto device_manager = core::dbus::Service::use_service(sys_bus, core::dbus::traits::Service<core::DeviceManager>::interface_name());
@@ -828,10 +832,11 @@ bool DBusUtils::check_session_dbus_exist(const std::string &name) {
         // install
         session_bus->install_executor(core::dbus::asio::make_executor(session_bus));
         auto bus = core::dbus::Service::use_service(session_bus, core::dbus::traits::Service<core::DBus>::interface_name());
-        auto bus_obj = bus->object_for_path(core::dbus::types::ObjectPath("/org/freedesktop/DBus"));
+        auto bus_obj = bus->add_object_for_path(core::dbus::types::ObjectPath("/org/freedesktop/DBus"));
         core::dbus::Result<bool> exist = bus_obj->invoke_method_synchronously<core::DBus::NameHasOwner, bool, std::string>(name);
         return exist.value();
     } catch (std::exception & e) {
+        std::cout << e.what() << std::endl;
         return false;
     }
 }
@@ -839,10 +844,10 @@ bool DBusUtils::check_session_dbus_exist(const std::string &name) {
 bool DBusUtils::check_system_dbus_exist(const std::string &name) {
     try {
         // create session bus 
-        auto session_bus = the_system_bus();
+        auto system_bus = the_system_bus();
         // install
-        session_bus->install_executor(core::dbus::asio::make_executor(session_bus));
-        auto bus = core::dbus::Service::use_service(session_bus, core::dbus::traits::Service<core::DBus>::interface_name());
+        system_bus->install_executor(core::dbus::asio::make_executor(system_bus));
+        auto bus = core::dbus::Service::use_service(system_bus, core::dbus::traits::Service<core::DBus>::interface_name());
         auto bus_obj = bus->add_object_for_path(core::dbus::types::ObjectPath("/org/freedesktop/DBus"));
         core::dbus::Result<bool> exist = bus_obj->invoke_method_synchronously<core::DBus::NameHasOwner, bool, std::string>(name);
         return exist.value();

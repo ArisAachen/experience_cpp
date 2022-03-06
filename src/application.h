@@ -50,6 +50,11 @@ private:
      */
     void init_collector(std::vector<CollectorInterface> vec);
 
+    /**
+     * @brief init writer
+     * @param[in] vec init writer
+     */
+    void init_writer(std::vector<WriterInterface::ptr> vec);
 private:
     // define thread here
     typedef std::shared_ptr<std::jthread> Thread;

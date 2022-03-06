@@ -17,6 +17,8 @@ class AppCollector : public CollectorInterface {
 public:
     typedef std::shared_ptr<AppCollector> ptr;
 
+    AppCollector();
+
     /**
      * @brief ollect message to queue
      * @param[in] que collect queue

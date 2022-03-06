@@ -4,6 +4,7 @@
 #include "config.h"
 #include "utils.h"
 #include "writer.h"
+#include "data.h"
 
 #include <exception>
 #include <functional>
@@ -30,10 +31,15 @@ void Application::init_log() {
 
 
 void Application::start() {
-    EXPERIENCE_INFO(">>>>>> application start");
+    EXPERIENCE_INFO("application start");
     // hardware module
     ModuleCfgCor::ptr hardware = ModuleCfgCor::ptr(new HardModule);
+    hardware->load_from_file(hardware->get_config_file());
+
     ModuleWtrCor::ptr database = ModuleWtrCor::ptr (new DBModule);
+    database->connect(database->get_remote());
+
+    CollectorInterface::ptr app = CollectorInterface::ptr(new AppCollector);
     WriterInterface::ptr web = WriterInterface::ptr(new WebWriter);
 
     // create database queue
@@ -42,6 +48,8 @@ void Application::start() {
     QueueInterface::ptr web_queue = QueueInterface::ptr(new Queue());
     // append hardware thread
     threads_.emplace_back(Application::Thread(new std::jthread(std::bind(&CollectorInterface::collect, hardware, db_queue))));
+    // app info collect
+    threads_.emplace_back(Application::Thread(new std::jthread(std::bind(&CollectorInterface::collect, app, db_queue))));
     // append data base queue
     threads_.emplace_back(Application::Thread(new std::jthread(std::bind(&CollectorInterface::collect, database, web_queue))));
 
@@ -56,6 +64,12 @@ void Application::init_config(std::vector<ConfigInterface::ptr> vec) {
     for (auto iter : vec)
         iter->load_from_file(iter->get_config_file());
 }
+
+void Application::init_writer(std::vector<WriterInterface::ptr> vec) {
+    for (auto iter : vec)
+        iter->connect(iter->get_remote());
+}
+
 
 void Application::stop() {
     for (auto iter : threads_) {

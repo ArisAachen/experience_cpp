@@ -248,6 +248,11 @@ struct WriterInterface {
      * @param[in] que request queue
      */
     virtual void write(QueueInterface::ptr que) = 0;
+
+    /**
+     * @brief Get the remote object
+     */
+    virtual const std::string get_remote() = 0;
 };
 
 struct ModuleCfgCor : public ConfigInterface, public CollectorInterface {
