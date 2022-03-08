@@ -19,9 +19,11 @@
 #ifndef __EXPERIENCE_SRC_DEFINE_H__
 #define __EXPERIENCE_SRC_DEFINE_H__
 
+#include <condition_variable>
 #include <cstddef>
 #include <functional>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <queue>
 #include <vector>
@@ -225,10 +227,41 @@ struct CollectorInterface {
     virtual void handler(ReqResult::ptr result) = 0;
 };
 
-struct Controller {
+struct RespChainInterface {
+    typedef std::shared_ptr<RespChainInterface> ptr;
 
+    /**
+     * @brief init resp chain
+     */
+    virtual void init() = 0;
+
+    /**
+     * @brief Set the block object
+     * @param[in] block block state
+     */
+    virtual void set_block(bool block);
+
+    /**
+     * @brief Get the block object
+     */
+    virtual void block();
+
+    /**
+     * @brief Set the next chain object
+     * @param[in] next next resp chain
+     */
+    virtual void set_next_chain(RespChainInterface::ptr next);
+
+protected:
+    /// block state
+    bool blocked_ {true};
+    /// block state mutex
+    std::mutex mutex_;
+    // wait condition
+    std::condition_variable nonblock_cond_ ; 
+    /// next respon chain
+    RespChainInterface::ptr next_;
 };
-
 
 struct WriterInterface {
     typedef std::shared_ptr<WriterInterface> ptr;

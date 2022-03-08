@@ -132,6 +132,23 @@ struct Dock {
     };
 };
 
+
+struct NetworkManager {
+    struct Properties {
+        struct Connectivity {
+            inline static std::string name()
+            {
+                return "Connectivity";
+            };
+            typedef NetworkManager Interface;
+            typedef uint32_t ValueType;
+            static const bool readable = true;
+            static const bool writable = false;                  
+        };
+    };
+};
+
+
 }
 
 namespace core {
@@ -171,6 +188,13 @@ struct Service<core::Dock::Entry> {
     {
         return "com.deepin.dde.daemon.Dock.Entry";        
     }    
+};
+
+template<>
+struct Service<core::NetworkManager> {
+    inline static const std::string interface_name() {
+        return  "org.freedesktop.NetworkManager";
+    }
 };
 
 }

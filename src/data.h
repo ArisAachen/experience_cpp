@@ -4,12 +4,13 @@
 #include "define.h"
 #include "define.pb.h"
 
+#include <mutex>
 #include <map>
 #include <memory>
 
 #include <core/dbus/bus.h>
 #include <core/dbus/types/object_path.h>
-#include <mutex>
+
 
 namespace experience {
 
@@ -73,10 +74,22 @@ private:
     std::map<ObjectPath, define::AppEntry> apps_;
 };
 
+// LoginCollector collect login and logout info
+class LoginCollector : public CollectorInterface {
+public: 
+    std::shared_ptr<LoginCollector> ptr;
+    /**
+     * @brief ollect message to queue
+     * @param[in] que collect queue
+     */
+    virtual void collect(QueueInterface::ptr que) override;
 
-
-
-
+    /**
+     * @brief handle request result
+     * @param[in] result req result
+     */
+    virtual void handler(ReqResult::ptr result) override;
+};
 
 }
 

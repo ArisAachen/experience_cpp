@@ -19,12 +19,11 @@
 #include <exception>
 #include <memory>
 
+#include <lastlog.h>
 #include <core/dbus/bus.h>
 #include <core/dbus/object.h>
 #include <core/dbus/property.h>
 #include <core/dbus/service.h>
-
-
 #include <core/dbus/bus.h>
 #include <core/dbus/service.h>
 #include <core/dbus/signal.h>
@@ -177,6 +176,20 @@ bool AppCollector::del_entry(ObjectPath & path) {
         return false;
     apps_.erase(path);
     return true;
+}
+
+// collect message
+void LoginCollector::collect(QueueInterface::ptr que) {
+
+}
+
+void LoginCollector::handler(ReqResult::ptr result) {
+    if (result->code != ReqResultCode::WriteResultSuccess) {
+        EXPERIENCE_DEBUG("write login message to database failed");
+        return;
+    }
+    EXPERIENCE_DEBUG("write login message to database success");
+    return;
 }
 
 }
