@@ -120,6 +120,17 @@ public:
      * @param[in] filepath file path
      */
     static bool load_from_file(std::string & msg, const std::string & filepath);
+
+    /**
+     * @brief Create a dir object
+     * @param[in] path create file dir
+     */
+    static bool create_dir(const std::string & path);
+
+    /**
+     * @brief Create a file object
+     */
+    static bool create_file(const std::string & path);
 };
 
 class SystemInfo {

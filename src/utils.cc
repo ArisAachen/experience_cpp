@@ -6,34 +6,39 @@
 
 #include <cctype>
 #include <chrono>
-
 #include <cstdarg>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
 #include <exception>
+#include <fcntl.h>
 #include <fstream>
 #include <future>
 #include <ios>
 #include <iostream>
+#include <math.h>
 #include <memory>
 #include <sstream>
-#include <string>
 #include <algorithm>
 #include <random>
 #include <string_view>
+#include <filesystem>
+#include <sys/stat.h>
+#include <system_error>
 #include <thread>
 #include <vector>
 #include <map>
 
-#include <cryptopp/base64.h>
-#include <cryptopp/rsa.h>
-#include <cryptopp/aes.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include <cryptopp/config_int.h>
 #include <cryptopp/filters.h>
 #include <cryptopp/integer.h>
 #include <cryptopp/osrng.h>
+#include <cryptopp/base64.h>
+#include <cryptopp/rsa.h>
+#include <cryptopp/aes.h>
 #include <core/dbus/bus.h>
 #include <core/dbus/service.h>
 #include <core/dbus/result.h>
@@ -53,7 +58,7 @@
 #include <boost/process/io.hpp>
 #include <boost/process/pipe.hpp>
 #include <boost/process.hpp>
-#include <unistd.h>
+
 
 
 namespace experience {
@@ -207,6 +212,25 @@ bool FileUtils::load_from_file(std::string &msg, const std::string &filepath) {
         return false;
     file >> msg;
     file.close();
+    return true;
+}
+
+bool FileUtils::create_dir(const std::string &path) {
+    // create dir
+    std::error_code code;
+    std::filesystem::create_directory(path, code);
+    // check if create dir success
+    if (code) 
+        return false;
+    return true;
+}
+
+bool FileUtils::create_file(const std::string &path) {
+    int fd = open(path.c_str(), O_RDWR | O_CREAT , S_IRWXU | S_IRWXG | S_IRWXO);
+    if (fd == -1) {
+        return false;
+    }
+    close(fd);
     return true;
 }
 

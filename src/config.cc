@@ -86,7 +86,7 @@ void  Module<T>::collect(QueueInterface::ptr que) {
 
 template<typename T>
 void  Module<T>::handler(ReqResult::ptr result) {
-    
+
 }
 
 HardModule::HardModule() {
@@ -174,8 +174,10 @@ void HardModule::collect(QueueInterface::ptr que) {
 // save file
 void HardModule::handler(ReqResult::ptr result) {
     // if write not success, should ignore
-    if (result->code != ReqResultCode::WriteResultSuccess)  
+    if (result->code != ReqResultCode::WriteResultSuccess)  {
+        EXPERIENCE_WARN("post hardware message failed, dont need to update uni");
         return;
+    }
     define::RcvUni uni;
     // parsel uni
     uni.ParseFromString(result->msg);

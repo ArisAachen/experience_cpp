@@ -6,7 +6,6 @@
 #include "utils.h"
 
 #include <chrono>
-#include <cpr/timeout.h>
 #include <cstddef>
 #include <cstdint>
 #include <ctime>
@@ -15,7 +14,6 @@
 #include <iostream>
 #include <map>
 #include <mutex>
-#include <sqlite3.h>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -23,10 +21,12 @@
 #include <vector>
 #include <algorithm>
 
+#include <sqlite3.h>
 #include <cpr/api.h>
 #include <cpr/body.h>
 #include <cpr/cprtypes.h>
 #include <cpr/response.h>
+#include <cpr/timeout.h>
 #include <boost/algorithm/string/join.hpp>
 #include <google/protobuf/stubs/status.h>
 #include <google/protobuf/util/json_util.h>
@@ -53,7 +53,7 @@ bool DataBase::open() {
         // open database successfully
         EXPERIENCE_FMT_INFO("database open successfully, path: %s", path_.c_str());
     } catch(std::exception & exp) {
-        EXPERIENCE_FMT_ERR("database open failed, err: %s", exp.what());
+        EXPERIENCE_FMT_ERR("database open failed, err: %s", sqlite3_errmsg(db_));
         return false;
     }
     return true;
@@ -73,7 +73,7 @@ bool DataBase::is_open() {
 // create table
 bool DataBase::create_table(const std::string & name, const std::string &typ) {
     // create table command
-    std::string cmd = "CREATE TABLE IF NOT EXIST " + name + "(" + typ + ");";
+    std::string cmd = "CREATE TABLE IF NOT EXISTS " + name + "(" + typ + ")";
     if (!execute_no_return(cmd)) {
         EXPERIENCE_FMT_ERR("create table %s failed", name.c_str());
         return false;
@@ -327,7 +327,7 @@ void DBModule::create_table(const std::string & table) {
     const std::string typ = R"(
         Type INTEGER,
         Data TEXT,
-        Nano TIMESTAMP,
+        Nano TIMESTAMP
     )";
     db_->create_table(table, typ);
 }
@@ -408,7 +408,17 @@ const std::string DBModule::get_remote()  {
 }
 
 void DBModule::handler(ReqResult::ptr result) {
-    
+    // only saved result dont need to delete
+    if (result->code != ReqResultCode::WriteResultSavedFailed) {
+        EXPERIENCE_DEBUG("database post failed, but dont need to delete data");
+        return;
+    }
+    // remove 
+    if (!db_->remove(get_table(), std::make_pair("Data", result->origin))) {
+        EXPERIENCE_FMT_WARN("delete data from database failed, data: %s", result->origin.c_str());
+        return;
+    }
+    EXPERIENCE_FMT_DEBUG("delete data from database success, data: %s", result->origin.c_str());
 }
 
 UrlValues::UrlValues() {
