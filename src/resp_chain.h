@@ -79,7 +79,7 @@ private:
 
 private:
     /// export object
-    core::dbus::Object::Ptr obj;
+    core::dbus::Object::Ptr obj_;
 };
 
 

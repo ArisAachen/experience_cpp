@@ -3,12 +3,17 @@
 #include "log.h"
 #include "utils.h"
 
+
+#include <chrono>
 #include <cstdint>
 #include <functional>
 #include <memory>
 #include <mutex>
 #include <string>
+#include <thread>
 
+#include <signal.h>
+#include <bits/types/sigset_t.h>
 #include <core/dbus/signal.h>
 #include <core/dbus/message.h>
 #include <core/dbus/asio/executor.h>
@@ -24,6 +29,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/property_tree/ptree_fwd.hpp>
+
 
 
 namespace experience {
@@ -62,19 +68,22 @@ void NetworkRespChain::init() {
     if (connectivity == 4) {
         EXPERIENCE_DEBUG("network manager init online, allow to post message");
         set_block(false);
-        return;
+    } else {
+        EXPERIENCE_DEBUG("network manager init offline, dont allow to post message");
     }
-    EXPERIENCE_DEBUG("network manager init offline, dont allow to post message");
+    // sig set
+    sigset_t set;
+    sigemptyset(&set);
+    sigaddset(&set, SIGINT);
+    int sig;
+    sigwait(&set, &sig);
 }
 
 ExplanModule::ExplanModule(const core::dbus::Bus::Ptr& bus) :
 // create session bus
-core::dbus::Skeleton<IExperienceService>(bus), 
-obj(access_service()->add_object_for_path(core::dbus::types::ObjectPath("/com/deepin/userexperience/Daemon")))
+core::dbus::Skeleton<IExperienceService>(bus)
 {   
-    // install method handle
-    obj->install_method_handler<IExperienceService::Enable>(std::bind(&ExplanModule::enable, this, std::placeholders::_1));
-    obj->install_method_handler<IExperienceService::IsEnabled>(std::bind(&ExplanModule::is_enabled, this, std::placeholders::_1));
+
 }
 
 // save experience plan to file
@@ -107,8 +116,20 @@ const std::string ExplanModule::get_config_file() {
 
 void ExplanModule::init() {
     // export on session bus
+    obj_ = core::dbus::Object::Ptr(access_service()->add_object_for_path(core::dbus::types::ObjectPath("/com/deepin/userexperience/Daemon")));
+    // install method handle
+    obj_->install_method_handler<IExperienceService::Enable>(std::bind(&ExplanModule::enable, this, std::placeholders::_1));
+    obj_->install_method_handler<IExperienceService::IsEnabled>(std::bind(&ExplanModule::is_enabled, this, std::placeholders::_1));
     auto bus = std::make_shared<core::dbus::Bus>(core::dbus::WellKnownBus::session);
+    bus->install_executor(core::dbus::asio::make_executor(bus));
     auto explan_service = core::dbus::announce_service_on_bus<IExperienceService, ExplanModule>(bus);
+
+    // sig set
+    sigset_t set;
+    sigemptyset(&set);
+    sigaddset(&set, SIGINT);
+    int sig;
+    sigwait(&set, &sig);
 }
 
 void ExplanModule::enable(const core::dbus::Message::Ptr& msg) {
