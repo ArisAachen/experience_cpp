@@ -31,14 +31,13 @@ private:
 
 
 // ExplanRespChain use to control write op according to experience plan enable state
-class ExplanRespChain : public ModuleCfgResp, public core::dbus::Skeleton<IExperienceService> {
+class ExplanModule : public ModuleCfgResp, public core::dbus::Skeleton<IExperienceService> {
 public:
-    typedef std::shared_ptr<ExplanRespChain> Ptr;
-
+    typedef std::shared_ptr<ExplanModule> Ptr;
     /**
      * @brief Construct a new Explan Resp Chain object
      */
-    ExplanRespChain();
+    ExplanModule(const core::dbus::Bus::Ptr& bus);
     /**
      * @brief save config to file
      * @param[in] filename file name

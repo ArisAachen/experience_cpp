@@ -279,6 +279,12 @@ struct WriterInterface {
     virtual void disconnect() = 0;
 
     /**
+     * @brief Set the resp chain object
+     * @param[in] resp response rule chain
+     */
+    virtual void set_resp_chain(RespChainInterface::ptr resp) = 0;
+
+    /**
      * @brief write queue data to writer
      * @param[in] que request queue
      */
@@ -300,6 +306,10 @@ struct ModuleWtrCor : public CollectorInterface, public WriterInterface {
 
 struct ModuleCfgResp : public ConfigInterface, public RespChainInterface {
     typedef std::shared_ptr<ModuleCfgResp> ptr;
+};
+
+struct ModuleWtrResp : public WriterInterface, public RespChainInterface {
+    typedef std::shared_ptr<ModuleWtrResp> ptr;
 };
 
 }

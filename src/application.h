@@ -48,13 +48,13 @@ private:
      * @brief 
      * @param vec 
      */
-    void init_collector(std::vector<CollectorInterface> vec);
+    void init_writer(std::vector<WriterInterface::ptr> vec);
 
     /**
      * @brief init writer
      * @param[in] vec init writer
      */
-    void init_writer(std::vector<WriterInterface::ptr> vec);
+    void init_collector(std::vector<std::tuple<std::string, CollectorInterface::ptr, QueueInterface::ptr>> vec);
 
     /**
      * @brief 

@@ -41,11 +41,6 @@
 
 namespace experience {
 
-
-AppCollector::AppCollector() {
-
-}
-
 // collect data
 void AppCollector::collect(QueueInterface::ptr que) {
     // wait dde dock service

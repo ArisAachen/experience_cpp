@@ -454,21 +454,32 @@ const std::string UrlValues::encode() {
     return result;
 }
 
+void ModuleWeb::set_resp_chain(RespChainInterface::ptr resp) {
+    rule_ = resp;
+}
+
 // write to web
-void WebWriter::write(QueueInterface::ptr que) {
+void ModuleWeb::write(QueueInterface::ptr que) {
     while (true) {
+        // rule chain to block
+        if (rule_) 
+            rule_->block();
         // pop message
         auto req = que->pop();
+        // check if need set block
+        set_tid_block(req->tid);
         // send data
         auto result = send(req);
         // call handle
         if (req->call_back)
             req->call_back(result);
+        // release block here
+        release_tid_block(req->tid);
     }
 }
 
 // send data to web
-ReqResult::ptr WebWriter::send(ReqMessage::ptr req) {
+ReqResult::ptr ModuleWeb::send(ReqMessage::ptr req) {
     // post data
     define::PostSimpleData data;
     // time
@@ -556,7 +567,20 @@ ReqResult::ptr WebWriter::send(ReqMessage::ptr req) {
     return result;
 }
 
-const std::string WebWriter::get_remote() {
+void ModuleWeb::set_tid_block(TidTyp tid) {
+    // when update uni info, should set block here
+    if (tid == TidTyp::SystemInfoTid)
+        set_block(true);
+}
+
+void ModuleWeb::release_tid_block(TidTyp tid) {
+    // when update uni info, should set block here
+    if (tid == TidTyp::SystemInfoTid)
+        set_block(false);
+}
+
+
+const std::string ModuleWeb::get_remote() {
     return "";
 }
 

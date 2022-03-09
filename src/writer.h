@@ -191,6 +191,12 @@ public:
      */
     virtual const std::string get_remote() override;
 
+    /**
+     * @brief Set the resp chain object
+     * @param[in] resp response rule chain
+     */
+    virtual void set_resp_chain(RespChainInterface::ptr resp) override {}
+
 public:
     /**
      * @brief read message from data
@@ -245,9 +251,9 @@ private:
     std::map<std::string, std::string> values_;
 };
 
-class WebWriter : public WriterInterface {
+class ModuleWeb : public ModuleWtrResp {
 public:
-    typedef std::shared_ptr<WebWriter> ptr;
+    typedef std::shared_ptr<ModuleWeb> ptr;
 
     /**
      * @brief try to connect to url path
@@ -271,6 +277,16 @@ public:
      */
     virtual const std::string get_remote() override;
 
+    /**
+     * @brief Set the resp chain object
+     * @param[in] resp response rule chain
+     */
+    virtual void set_resp_chain(RespChainInterface::ptr resp) override;
+
+    /**
+     * @brief init 
+     */
+    virtual void init() override {}
 private:
     /**
      * @brief send data to web
@@ -278,8 +294,22 @@ private:
      */
     ReqResult::ptr send(ReqMessage::ptr msg);
 
+    /**
+     * @brief Set the tid block object
+     * @param[in] tid set block according to tid
+     */
+    void set_tid_block(TidTyp tid);
+
+    /**
+     * @brief release the tid block object
+     * @param[in] tid release block according to tid
+     */
+    void release_tid_block(TidTyp tid);    
+
 private:
-    //
+    /// respon rule chain
+    RespChainInterface::ptr rule_;
+    /// uni ifc
     std::string ifc_ { post_unification };
     /// urls
     std::vector<std::string> urls_ { post_url_first, post_url_second, post_url_third };

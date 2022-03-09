@@ -67,18 +67,18 @@ void NetworkRespChain::init() {
     EXPERIENCE_DEBUG("network manager init offline, dont allow to post message");
 }
 
-ExplanRespChain::ExplanRespChain() :
+ExplanModule::ExplanModule(const core::dbus::Bus::Ptr& bus) :
 // create session bus
-core::dbus::Skeleton<IExperienceService>(std::make_shared<core::dbus::Bus>(core::dbus::WellKnownBus::session)), 
+core::dbus::Skeleton<IExperienceService>(bus), 
 obj(access_service()->add_object_for_path(core::dbus::types::ObjectPath("/com/deepin/userexperience/Daemon")))
 {   
     // install method handle
-    obj->install_method_handler<IExperienceService::Enable>(std::bind(&ExplanRespChain::enable, this, std::placeholders::_1));
-    obj->install_method_handler<IExperienceService::IsEnabled>(std::bind(&ExplanRespChain::is_enabled, this, std::placeholders::_1));
+    obj->install_method_handler<IExperienceService::Enable>(std::bind(&ExplanModule::enable, this, std::placeholders::_1));
+    obj->install_method_handler<IExperienceService::IsEnabled>(std::bind(&ExplanModule::is_enabled, this, std::placeholders::_1));
 }
 
 // save experience plan to file
-void ExplanRespChain::save_to_file(const std::string &filename) {
+void ExplanModule::save_to_file(const std::string &filename) {
     // convert to node, 
     boost::property_tree::ptree node;
     node.put<bool>("ExperiencePlan.ExperienceState", !blocked_);
@@ -88,7 +88,7 @@ void ExplanRespChain::save_to_file(const std::string &filename) {
 }
 
 // load from file
-void ExplanRespChain::load_from_file(const std::string &filename) {
+void ExplanModule::load_from_file(const std::string &filename) {
     // convert to node, 
     boost::property_tree::ptree node;
     node.get<bool>("ExperiencePlan.ExperienceState", !blocked_);
@@ -96,29 +96,29 @@ void ExplanRespChain::load_from_file(const std::string &filename) {
     EXPERIENCE_FMT_INFO("load experience state success, state: %d", !blocked_);
 }
 
-bool ExplanRespChain::need_update() {
+bool ExplanModule::need_update() {
     return false;
 }
 
 // get config file
-const std::string ExplanRespChain::get_config_file() {
+const std::string ExplanModule::get_config_file() {
     return system_exlan_file;
 }
 
-void ExplanRespChain::init() {
+void ExplanModule::init() {
     // export on session bus
     auto bus = std::make_shared<core::dbus::Bus>(core::dbus::WellKnownBus::session);
-    auto explan_service = core::dbus::announce_service_on_bus<IExperienceService, ExplanRespChain>(bus);
+    auto explan_service = core::dbus::announce_service_on_bus<IExperienceService, ExplanModule>(bus);
 }
 
-void ExplanRespChain::enable(const core::dbus::Message::Ptr& msg) {
+void ExplanModule::enable(const core::dbus::Message::Ptr& msg) {
     // set enabled state
     bool enabled;
     msg->reader() >> enabled;
     set_block(!enabled);
 }
 
-void ExplanRespChain::is_enabled(const core::dbus::Message::Ptr& msg) {
+void ExplanModule::is_enabled(const core::dbus::Message::Ptr& msg) {
     auto reply = core::dbus::Message::make_method_return(msg);
     reply->writer() << !blocked_;
     access_bus()->send(reply);
