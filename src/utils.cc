@@ -12,26 +12,25 @@
 #include <cstdlib>
 #include <ctime>
 #include <exception>
-#include <fcntl.h>
 #include <fstream>
 #include <future>
 #include <ios>
 #include <iostream>
-#include <math.h>
 #include <memory>
 #include <sstream>
 #include <algorithm>
 #include <random>
 #include <string_view>
 #include <filesystem>
-#include <sys/stat.h>
 #include <system_error>
 #include <thread>
 #include <vector>
 #include <map>
 
 #include <unistd.h>
+#include <sys/stat.h>
 #include <fcntl.h>
+#include <math.h>
 #include <cryptopp/config_int.h>
 #include <cryptopp/filters.h>
 #include <cryptopp/integer.h>
@@ -313,13 +312,14 @@ const std::string SystemInfo::get_active_code() {
 
 static bool experience_enable = false;
 
-const bool SystemInfo::get_experience_enable() {
+bool SystemInfo::get_experience_enable() {
     return experience_enable;
 }
 
 void SystemInfo::set_experience_enable(bool enable) {
     experience_enable = enable;
 }
+
 
 class SysModule {
 public:

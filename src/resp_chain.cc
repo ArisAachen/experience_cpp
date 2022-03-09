@@ -4,26 +4,29 @@
 #include "utils.h"
 
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <mutex>
+#include <string>
 
 #include <core/dbus/signal.h>
+#include <core/dbus/message.h>
 #include <core/dbus/asio/executor.h>
 #include <core/dbus/interfaces/properties.h>
 #include <core/dbus/service.h>
+#include <core/dbus/announcer.h>
 #include <core/dbus/property.h>
 #include <core/dbus/traits/service.h>
 #include <core/dbus/well_known_bus.h>
+#include <core/dbus/skeleton.h>
+#include <core/dbus/bus.h>
+#include <core/dbus/types/object_path.h>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
+#include <boost/property_tree/ptree_fwd.hpp>
 
 
 namespace experience {
-
-
-NetworkRespChain::NetworkRespChain() {
-
-}
-
-
 
 void NetworkRespChain::init() {
     // wait for network manager service
@@ -64,8 +67,62 @@ void NetworkRespChain::init() {
     EXPERIENCE_DEBUG("network manager init offline, dont allow to post message");
 }
 
+ExplanRespChain::ExplanRespChain() :
+// create session bus
+core::dbus::Skeleton<IExperienceService>(std::make_shared<core::dbus::Bus>(core::dbus::WellKnownBus::session)), 
+obj(access_service()->add_object_for_path(core::dbus::types::ObjectPath("/com/deepin/userexperience/Daemon")))
+{   
+    // install method handle
+    obj->install_method_handler<IExperienceService::Enable>(std::bind(&ExplanRespChain::enable, this, std::placeholders::_1));
+    obj->install_method_handler<IExperienceService::IsEnabled>(std::bind(&ExplanRespChain::is_enabled, this, std::placeholders::_1));
+}
 
+// save experience plan to file
+void ExplanRespChain::save_to_file(const std::string &filename) {
+    // convert to node, 
+    boost::property_tree::ptree node;
+    node.put<bool>("ExperiencePlan.ExperienceState", !blocked_);
+    // write config to ini file
+    boost::property_tree::ini_parser::write_ini(filename, node);
+    EXPERIENCE_FMT_INFO("write experien state success, state: %d", !blocked_);
+}
 
+// load from file
+void ExplanRespChain::load_from_file(const std::string &filename) {
+    // convert to node, 
+    boost::property_tree::ptree node;
+    node.get<bool>("ExperiencePlan.ExperienceState", !blocked_);
+    SystemInfo::set_experience_enable(!blocked_);
+    EXPERIENCE_FMT_INFO("load experience state success, state: %d", !blocked_);
+}
+
+bool ExplanRespChain::need_update() {
+    return false;
+}
+
+// get config file
+const std::string ExplanRespChain::get_config_file() {
+    return system_exlan_file;
+}
+
+void ExplanRespChain::init() {
+    // export on session bus
+    auto bus = std::make_shared<core::dbus::Bus>(core::dbus::WellKnownBus::session);
+    auto explan_service = core::dbus::announce_service_on_bus<IExperienceService, ExplanRespChain>(bus);
+}
+
+void ExplanRespChain::enable(const core::dbus::Message::Ptr& msg) {
+    // set enabled state
+    bool enabled;
+    msg->reader() >> enabled;
+    set_block(!enabled);
+}
+
+void ExplanRespChain::is_enabled(const core::dbus::Message::Ptr& msg) {
+    auto reply = core::dbus::Message::make_method_return(msg);
+    reply->writer() << !blocked_;
+    access_bus()->send(reply);
+}
 
 
 }

@@ -194,7 +194,7 @@ public:
     /**
      * @brief Get the experience enable object
      */
-    static const bool get_experience_enable();
+    static bool get_experience_enable();
 
     /**
      * @brief Set the experience enable object

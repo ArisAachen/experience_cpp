@@ -55,6 +55,12 @@ private:
      * @param[in] vec init writer
      */
     void init_writer(std::vector<WriterInterface::ptr> vec);
+
+    /**
+     * @brief 
+     * @param[in] vec respon vec
+     */
+    void init_resp(std::vector<RespChainInterface::ptr> vec);
 private:
     // define thread here
     typedef std::shared_ptr<std::jthread> Thread;

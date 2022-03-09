@@ -22,6 +22,7 @@
 #include <condition_variable>
 #include <cstddef>
 #include <functional>
+#include <future>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -63,6 +64,7 @@ const std::string database_table = "exp";
 
 const std::string etc_dir = "/etc";
 const std::string zone_file = etc_dir + "/" + "timezone";
+const std::string system_exlan_file = etc_dir + "/" + "deepin/deepin-user-experience";
 const std::string machine_id_file = etc_dir + "/"  + "machine-id";
 const std::string apt_token_file = etc_dir + "/" + "apt" + "/" + "apt.conf.d" + "/" + "99lastore-token.conf";
 
@@ -294,6 +296,10 @@ struct ModuleCfgCor : public ConfigInterface, public CollectorInterface {
 
 struct ModuleWtrCor : public CollectorInterface, public WriterInterface {
     typedef std::shared_ptr<ModuleWtrCor> ptr;
+};
+
+struct ModuleCfgResp : public ConfigInterface, public RespChainInterface {
+    typedef std::shared_ptr<ModuleCfgResp> ptr;
 };
 
 }

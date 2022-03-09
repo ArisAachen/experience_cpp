@@ -14,6 +14,40 @@
 #include <core/dbus/traits/service.h>
 #include <core/dbus/types/object_path.h>
 
+namespace experience {
+class IExperienceService {
+protected:
+    struct Enable {
+        typedef IExperienceService Interface;
+        inline static const std::string name() {
+            return "Enable";
+        }
+        inline static const std::chrono::milliseconds default_timeout()
+        {
+            return std::chrono::seconds{1};
+        }
+    };
+
+    struct IsEnabled {
+        typedef IExperienceService Interface;
+        inline static const std::string name() {
+            return "IsEnabled";
+        }
+        inline static const std::chrono::milliseconds default_timeout()
+        {
+            return std::chrono::seconds{1};
+        }
+    };
+
+public:
+    virtual~IExperienceService() = default;
+    // // enable method
+    // virtual void enable(bool enabled) = 0;
+    // // get enable state
+    // virtual bool is_enabled() = 0;
+};
+}
+
 
 namespace core {
 
@@ -148,7 +182,6 @@ struct NetworkManager {
     };
 };
 
-
 }
 
 namespace core {
@@ -195,6 +228,14 @@ struct Service<core::NetworkManager> {
     inline static const std::string interface_name() {
         return  "org.freedesktop.NetworkManager";
     }
+};
+
+template<>
+struct Service<experience::IExperienceService> {
+    inline static const std::string interface_name()
+    {
+        return "com.deepin.userexperience.Daemon";
+    }    
 };
 
 }
