@@ -1,0 +1,9 @@
+DBUS_INCLUDE_DIRS:INTERNAL=/usr/include/dbus-1.0;/usr/lib/dbus-1.0/include
+DBUS_CFLAGS:INTERNAL=-I/usr/include/dbus-1.0;-I/usr/lib/dbus-1.0/include
+
+
+DBUS_CPP_LIBRARIES:INTERNAL=dbus-cpp
+CRYPTOPP_LIBRARIES:INTERNAL=cryptopp
+CPR_LIBRARIES:INTERNAL=cpr
+SQLITE3_LIBRARIES:INTERNAL=sqlite3
+PROTOBUF_LIBRARIES:INTERNAL=protobuf

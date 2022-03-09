@@ -15,52 +15,38 @@
 # Authored by: Thomas Voss <thomas.voss@canonical.com>
 
 find_package(PkgConfig)
-find_package(Boost COMPONENTS system)
-find_package(Threads)
-
 pkg_check_modules(DBUS dbus-1)
 
-DBUS_CFLAGS:INTERNAL=-I/usr/include/dbus-1.0;-I/usr/lib/dbus-1.0/include
-DBUS_INCLUDE_DIRS:INTERNAL=/usr/include/dbus-1.0;/usr/lib/dbus-1.0/include
-DBUS_LIBRARIES:INTERNAL=dbus-1
-DBUS_CPP_LIBRARIES:INTERNAL=dbus-cpp
-PROTOBUF_LIBRARIES:INTERNAL=protobuf
-CPR_LIBRARIES:INTERNAL=cpr
-CRPYPTO_LIBRARIES:INTERNAL=cryptopp
-SQLITE3_LIBRARIES:INTERNAL=sqlite3
-
-
-// flags
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Werror -Wall -Wextra -fvisibility=hidden -fPIC -pthread")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Werror -Wall -fno-strict-aliasing -fvisibility=hidden -fvisibility-inlines-hidden -Wextra -fPIC -pthread")
-
-
 include_directories(
-  ${CMAKE_SOURCE_DIR}/include
   ${DBUS_INCLUDE_DIRS}
-  ${Boost_INCLUDE_DIRS}
-  ${GTEST_INCLUDE_DIRS}
-  )
+  ${BOOST_INCLUDE_DIRS}
+)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -fno-strict-aliasing -fvisibility=hidden -fvisibility-inlines-hidden -Wextra -fPIC")
 
 add_library(
-  DSService SHARED
-
-  ${CMAKE_CURRENT_BINARY_DIR}/data.cc
+  ${PROJECT_NAME} SHARED
+  plugin.cc
+  data.cc
   application.cc
   config.cc
   define.pb.cc
   log.cc
   utils.cc
   writer.cc
+  resp_chain.cc
+  define.cc
 )
 
-target_link_libraries(
-  DSService
+target_link_libraries (
+  ${PROJECT_NAME}
 
-  ${Boost_LIBRARIES}
-  ${DBUS_LIBRARIES}
+  ${BOOST_LIBRARIES}
   ${DBUS_CPP_LIBRARIES}
-  ${PROTOBUF_LIBRARIES}
+  ${CRYPTOPP_LIBRARIES}
   ${CPR_LIBRARIES}
+  ${SQLITE3_LIBRARIES}
+  ${PROTOBUF_LIBRARIES}
+)
 
-) 
+install(TARGET ${PLUGIN_NAME} LIBRARY DESTINATION lib/dde-plugins/session)
