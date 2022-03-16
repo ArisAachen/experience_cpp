@@ -2,6 +2,7 @@
 #define __EXPERIENCE_SRC_APPLICATION_H__
 
 #include "define.h"
+#include "thread.h"
 
 #include <memory>
 #include <thread>
@@ -62,8 +63,8 @@ private:
     void init_resp(std::vector<RespChainInterface::ptr> vec);
 private:
     // define thread here
-    typedef std::shared_ptr<std::jthread> Thread;
-    std::vector<Thread> threads_;
+    typedef std::shared_ptr<Thread> ThreadPtr;
+    std::vector<ThreadPtr> threads_;
 };
 
 }

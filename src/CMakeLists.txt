@@ -49,4 +49,4 @@ target_link_libraries (
   ${PROTOBUF_LIBRARIES}
 )
 
-install(TARGET ${PLUGIN_NAME} LIBRARY DESTINATION lib/dde-plugins/session)
+install(TARGETS ${PLUGIN_NAME} LIBRARY DESTINATION lib/dde-plugins/session)

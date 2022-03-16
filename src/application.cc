@@ -11,7 +11,6 @@
 #include <functional>
 #include <memory>
 #include <string>
-#include <thread>
 #include <tuple>
 #include <vector>
 
@@ -26,8 +25,6 @@ Application::Application() {
 }
 
 Application::~Application() {
-    for (auto iter : threads_) 
-        iter->join();
 }
 
 void Application::init_log() {
@@ -107,19 +104,19 @@ void Application::init_collector(std::vector<std::tuple<std::string, CollectorIn
         auto col = std::get<1>(iter);
         auto que = std::get<2>(iter);
         // run thread
-        threads_.emplace_back(Application::Thread(new std::jthread(std::bind(&CollectorInterface::collect, col, que))));
+        threads_.emplace_back(ThreadPtr(new Thread("collect", &CollectorInterface::collect, col, que)));
     }
 }
 
 void Application::init_resp(std::vector<RespChainInterface::ptr> vec) {
     for (auto iter : vec)
-        threads_.emplace_back(Application::Thread(new std::jthread(std::bind(&RespChainInterface::init, iter))));
+        threads_.emplace_back(ThreadPtr(new Thread("resp chain", &RespChainInterface::init, iter)));
 }
 
 
 void Application::stop() {
     for (auto iter : threads_) {
-        iter->request_stop();
+        iter->stop();
     }
 }
 
